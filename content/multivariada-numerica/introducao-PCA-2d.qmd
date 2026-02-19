@@ -1,14 +1,18 @@
 ---
 title: "Introdução à Análise de Componentes Principais (PCA)"
+description: "Introdução à PCA em Python."
+categories: [Ordenação]
+image: "images/analises-multivariadas.png"
+format:
+  html:
+    toc: true
+    number-sections: true
 execute:
   echo: true
   warning: false
   include: true
   message: false
   eval: true
-format: 
-  html:
-    css: styles.css
 ---
 
 ```{python}
@@ -34,7 +38,7 @@ Ao identificar as direções de máxima variabilidade, a PCA projeta os dados ne
 
 ::: {.callout-tip title="Código em Python"}
 
-Acompanha este tutorial o [Código em Python sobre Introdução à PCA](pca_python.py){target="_blank" title="Código em Python"}
+Acompanha este tutorial o [Código em Python sobre Introdução à PCA](pca-python.py){target="_blank" title="Código em Python"}
 
 :::
 
