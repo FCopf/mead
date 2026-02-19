@@ -1,0 +1,14 @@
+---
+title: "Modelos Lineares Generalizados (GLMs)"
+description: "Introdução aos GLMs, incluindo Regressão Logística e Poisson."
+categories: [Modelagem, GLM, Regressão]
+image: "../images/regressao-linear.jpg" 
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+# Introdução aos GLMs
+
+(Conteúdo em construção)

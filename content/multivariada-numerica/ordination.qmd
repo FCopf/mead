@@ -1,0 +1,14 @@
+---
+title: "Métodos de ordenação"
+description: "Introdução aos métodos de ordenação: PCA, PCoA, CA, NMDS."
+categories: [Ordenalção]
+image: "../../images/analises-multivariadas.png"
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+# Classificação
+
+(Conteúdo em construção)

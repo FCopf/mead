@@ -1,0 +1,491 @@
+---
+title: "Modelos Estatísticos e Modelos Científicos"
+subtitle: "Complexidade Tecnológica em Ilhas da Oceania"
+description: "Três estratégias para modelar a relação entre tamanho populacional e número de ferramentas"
+Categories: [
+        "PyMC",
+        "GLM",
+        "Regressão linear",
+        "Modelo não linear",
+        "Regressão de Poisson"
+        ]
+image: "images/regressao-poisson.png"
+execute:
+    echo: true
+    eval: true
+    warning: false
+    message: false
+
+---
+
+Vamos utilizar modelos estatísticos para analisar a **complexidade tecnológica tradicional em ilhas da Oceania** [@kline2010population]. Nosso objetivo é compreender como o **tamanho populacional** influenciou o **número de ferramentas** disponíveis em cada sociedade. 
+
+Compararemos **três estratégias de modelagem**, todas implementadas com **PyMC**:
+
+1. **Modelo Linear com Transformação Logarítmica**: Utilizando regressão linear após transformar as variáveis
+2. **Modelo Linear Generalizado (GLM)**: Especificamente regressão de Poisson para dados de contagem
+3. **Modelo Científico (Mecanicista)**: Baseado em uma descrição teórica da dinâmica de aquisição e perda de ferramentas [@mcelreath2018statistical]
+
+## Analisando o conjunto de dados
+
+Importe os dados [kline.csv](https://raw.githubusercontent.com/FCopf/datasets/refs/heads/main/kline.csv).
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pymc as pm
+import bambi as bmb
+import arviz as az
+import xarray as xr
+```
+
+```{python}
+kline = pd.read_csv('https://raw.githubusercontent.com/FCopf/datasets/refs/heads/main/kline.csv')
+kline
+```
+
+Visualize a relação entre tamanho populacional (P) e número total de ferramentas (T).
+
+```{python}
+#| label: fig-tools-pop
+#| fig-cap: "Relação entre o número total de ferramentas e o tamanho populacional em ilhas na Oceania"
+#| fig-cap-location: bottom
+# Definir tema com fonte maior
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=kline, x='population', y='total_tools', 
+                s=100, alpha=0.7, color='#1f77b4')
+
+# Personalização dos rótulos e tema
+plt.xlabel('Tamanho populacional', fontsize=14)
+plt.ylabel('Número total de ferramentas', fontsize=14)
+sns.set_theme(style="whitegrid")
+
+
+```
+
+## Estratégia 1: Regressão Linear com Transformação Logarítmica
+
+A relação na @fig-tools-pop é claramente não linear e pode ser descrita por:
+
+$$T = \beta_0P^{\beta_1}$$
+
+Uma alternativa simples neste caso é utilizar uma transformação logarítmica para *linearizar* a expressão:
+
+$$\log(T) = \log(\beta_0P^{\beta_1}) \Rightarrow \log(T) = \log(\beta_0) + \log(P^{\beta_1}) \Rightarrow$$
+
+$$\log(T) = B_0 + \beta_1 \log(P)
+$${#eq-logT-logP}
+
+em que $B_0 = \log(\beta_0)$
+
+Visualizando na escala logarítmica:
+
+```{python}
+#| label: fig-log-tools-pop
+#| fig-cap: "Relação entre o logarítmo do número total de ferramentas e o logarítmo do tamanho populacional"
+#| fig-cap-location: bottom
+kline['log_tools'] = np.log(kline['total_tools'])
+kline['log_pop'] = np.log(kline['population'])
+
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=kline, x='log_pop', y='log_tools', 
+                s=100, alpha=0.7, color='#1f77b4')
+
+# Personalização dos rótulos e tema
+plt.xlabel('log do Tamanho populacional', fontsize=14)
+plt.ylabel('log do Número total de ferramentas', fontsize=14)
+```
+
+Considerando que a relação na @fig-log-tools-pop é aproximadamente linear, vamos ajustar o modelo de regressão linear descrito na @eq-logT-logP.
+
+Neste modelo, estamos assumindo que $\log(T)$ é uma variável aleatória normnalmente distribuída:
+
+$$\log(T) \sim \mathcal{N}(\mu,\,\sigma)$$
+
+$$\mu = B_0 + \beta_1 \log(P)$$
+
+### Implementação
+
+```{python}
+mlinear = bmb.Model("log_tools ~ log_pop", data=kline)
+trace_linear = mlinear.fit()
+```
+
+```{python}
+# Resumo dos parâmetros
+az.summary(trace_linear)
+```
+
+### Gerando predições do modelo linear
+
+```{python}
+pred_linear = mlinear.predict(trace_linear, kind = 'response', data = kline, inplace=False)
+pred_linear_draws = pred_linear.posterior_predictive.log_tools
+pred_linear_mean = pred_linear_draws.mean(dim=['chain', 'draw'])
+```
+
+### Visualização do modelo linear
+
+```{python}
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=kline, x='log_pop', y='log_tools', 
+                s=100, alpha=0.7, color='#1f77b4')
+
+plt.plot(kline['log_pop'],pred_linear_mean.values, color='red', linewidth=2, label='Predição média')
+az.plot_hdi(
+    kline['log_pop'],
+    pred_linear.posterior_predictive.log_tools,
+    hdi_prob=0.95, # Intervalo de 95%
+    color='#f3ae1a',
+    fill_kwargs={'alpha': 0.3, 'label': 'Intervalo de Credibilidade (95%)'}
+)
+
+plt.xlabel('log(População)', fontsize=14)
+plt.ylabel('Número total de ferramentas', fontsize=14)
+plt.title('Modelo de linear: log_tools ~ log_pop', fontsize=16)
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+```
+
+#### Visualização do modelo linear na escala original
+
+Como a escala original é um modelo não linear, teremos que gerar os valores preditos para mais pontos a partir dos parâmetros estimaos
+
+```{python}
+log_pop = np.linspace(min(kline['log_pop']), np.max(kline['log_pop']), num=1000)
+new_x =  xr.DataArray(
+    log_pop,
+    dims=['obs'],
+    coords={'obs': range(len(log_pop))},
+    name='log_pop'
+)
+
+mlinear_pars = mlinear.predict(trace_linear, kind = 'response_params', data = kline, inplace=False)
+
+B0 = mlinear_pars.posterior['Intercept']
+b1 = mlinear_pars.posterior['log_pop']
+new_pred_linear_mean = B0.values.mean() + b1.values.mean() * new_x
+
+new_pred_linear = np.exp(B0 + b1 * new_x)
+ic_linear = az.hdi(new_pred_linear, hdi_prob=0.95)
+
+```
+
+```{python}
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=kline, x='population', y='total_tools', 
+                s=100, alpha=0.7, color='#1f77b4')
+
+plt.plot(np.exp(new_x),np.exp(new_pred_linear_mean))
+
+plt.fill_between(np.exp(new_x),
+                 ic_linear.sel(hdi='lower')['x'],
+                 ic_linear.sel(hdi='higher')['x'],
+                 alpha=0.3, color='#f3ae1a', 
+                 label='HDI 95%')
+```
+
+
+## Estratégia 2: Regressão de Poisson (GLM)
+
+Embora a transformação logarítmica torne linear a porção determinística do modelo, ela não resolve adequadamente a natureza discreta da variável de resposta. No caso do número de ferramentas (`total_tools`), estamos lidando com dados de contagem — valores inteiros não negativos. Uma abordagem mais apropriada é utilizar uma **regressão de Poisson**, que modela diretamente a distribuição da variável como uma variável aleatória de contagem.
+
+Vamos assumir que o que realmente influencia a diversidade tecnológica não é o tamanho absoluto da população, mas sim sua **ordem de grandeza** [@kline2010population]. Espera-se, portanto, uma associação positiva entre o número de ferramentas e o logaritmo do tamanho populacional.
+
+Este modelo generativo pode ser descrito como:
+
+$$T_i \sim \text{Poisson}(\lambda_i)$$
+
+$$\log(\lambda_i) = \beta_0 + \beta_1 \cdot \log(P_i)$$
+
+Onde:
+* $T_i$ é o número de ferramentas na sociedade *i*
+* $P_i$ é o tamanho populacional
+* A função de ligação logarítmica garante que $\lambda_i > 0$
+
+### Implementação
+
+```{python}
+mpoisson = bmb.Model("total_tools ~ log_pop", 
+                     data=kline, 
+                     family="poisson")
+```
+
+```{python}
+trace_poisson = mpoisson.fit(draws=2000, tune=1000)
+```
+
+```{python}
+# Resumo dos parâmetros
+az.summary(trace_poisson)
+```
+
+### Gerando predições do modelo Poisson
+
+```{python}
+# Predições para os dados originais
+pred_poisson = mpoisson.predict(trace_poisson, kind='response', data=kline, inplace=False)
+pred_poisson_draws = pred_poisson.posterior_predictive.total_tools
+pred_poisson_mean = pred_poisson_draws.mean(dim=['chain', 'draw'])
+```
+
+```{python}
+# Criar dados para predição suave
+log_pop_new = np.linspace(min(kline['log_pop']), max(kline['log_pop']), num=100)
+new_data = pd.DataFrame({'log_pop': log_pop_new})
+
+# Gerar predições
+new_pred_poisson = mpoisson.predict(trace_poisson, kind='response', data=new_data, inplace=False)
+new_pred_poisson_mean = new_pred_poisson.posterior_predictive.total_tools.mean(dim=['chain', 'draw'])
+```
+
+### Visualização do modelo Poisson
+
+```{python}
+
+plt.figure(figsize=(8, 6))
+
+# Pontos originais
+sns.scatterplot(data=kline, x='log_pop', y='total_tools', 
+                s=100, alpha=0.7, color='#1f77b4', label='Dados observados')
+
+# Linha de predição média
+plt.plot(log_pop_new, new_pred_poisson_mean.values, 
+         color='red', linewidth=2, label='Predição média')
+
+# Intervalo de credibilidade
+az.plot_hdi(
+    log_pop_new,
+    new_pred_poisson.posterior_predictive.total_tools,
+    hdi_prob=0.95,
+    color='#f3ae1a',
+    fill_kwargs={'alpha': 0.3, 'label': 'HDI 95%'}
+)
+
+plt.xlabel('log(População)', fontsize=14)
+plt.ylabel('Número total de ferramentas', fontsize=14)
+plt.title('Modelo de Poisson: total_tools ~ log_pop', fontsize=16)
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+```
+
+### Visualização na escala original (população)
+
+```{python}
+plt.figure(figsize=(12, 8))
+
+sns.scatterplot(data=kline, x='population', y='total_tools', 
+                s=100, alpha=0.7, color='black', label='Dados observados')
+
+plt.plot(np.exp(log_pop_new), new_pred_poisson_mean.values, 
+         color='blue', linewidth=2, linestyle='--', label='Modelo Poisson')
+az.plot_hdi(
+    np.exp(log_pop_new),
+    new_pred_poisson.posterior_predictive.total_tools,
+    hdi_prob=0.95,
+    color='#1f77b4',
+    fill_kwargs={'alpha': 0.3, 'label': 'HDI 95% Poisson'},
+)
+
+plt.xlabel('População', fontsize=14)
+plt.ylabel('Número total de ferramentas', fontsize=14)
+plt.title('Comparação de Modelos', fontsize=16)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+
+```
+
+### Comparação com modelo linear
+
+```{python}
+plt.figure(figsize=(12, 8))
+
+sns.scatterplot(data=kline, x='population', y='total_tools', 
+                s=100, alpha=0.7, color='black', label='Dados observados')
+
+# Modelo Linear com transformação log (escala original)
+plt.plot(np.exp(new_x), np.exp(new_pred_linear_mean), 
+         color='red', linewidth=2, label='Modelo Linear')
+plt.fill_between(np.exp(new_x),
+                 ic_linear.sel(hdi='lower')['x'],
+                 ic_linear.sel(hdi='higher')['x'],
+                 alpha=0.3, color='#f3ae1a', 
+                 label='HDI 95% Linear')
+
+# Modelo Poisson (GLM)
+plt.plot(np.exp(log_pop_new), new_pred_poisson_mean.values, 
+         color='blue', linewidth=2, linestyle='--', label='Modelo Poisson')
+az.plot_hdi(
+    np.exp(log_pop_new),
+    new_pred_poisson.posterior_predictive.total_tools,
+    hdi_prob=0.95,
+    color='#1f77b4',
+    fill_kwargs={'alpha': 0.3, 'label': 'HDI 95% Poisson'},
+)
+
+plt.xlabel('População', fontsize=14)
+plt.ylabel('Número total de ferramentas', fontsize=14)
+plt.title('Comparação de Modelos', fontsize=16)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+```
+
+
+## Estratégia 3: Modelo Científico (Mecanicista)
+
+Partindo de uma descrição teórica da dinâmica de inovação tecnológica, podemos expressar a mudança esperada no número de ferramentas ao longo do tempo como:
+
+$$\Delta T = \alpha P^\beta - \gamma T$$
+
+Onde:
+* $P$ é o tamanho da população
+* $T$ é o número de ferramentas
+* $\alpha$, $\beta$ e $\gamma$ são parâmetros a serem estimados
+* $\alpha P^\beta$ representa a taxa de inovação (dependente da população)
+* $\gamma T$ representa a taxa de perda de ferramentas
+
+Assumindo que o sistema está em equilíbrio ($\Delta T = 0$), podemos resolver para $T$:
+
+::: {.callout-note title="Situação de equilíbrio"}
+
+Começamos com:
+$$0 = \alpha P^\beta - \gamma T$$
+
+Isolando o termo $T$:
+$$\gamma T = \alpha P^\beta$$
+
+Dividindo ambos os lados por $\gamma$:
+$$T = \frac{\alpha P^\beta}{\gamma}
+$${#eq-delta-T-equilibrio}
+
+:::
+
+Incorporando a @eq-delta-T-equilibrio a um modelo de Poisson:
+
+$$T_i \sim \text{Poisson}(\lambda_i)$$
+
+$$\lambda_i = \frac{\alpha P_i^{\beta}}{\gamma}$$
+
+### Implementação em PyMC
+
+Para facilitar a implementação, vamos reparametrizar usando:
+
+$$\log(\lambda_i) = \log(\alpha) + \beta \cdot \log(P_i) - \log(\gamma)$$
+
+ou equivalentemente:
+
+$$\log(\lambda_i) = \theta_\alpha + \beta \cdot \log(P_i) + \theta_\gamma$$
+
+onde $\theta_\alpha = \log(\alpha)$ e $\theta_\gamma = -\log(\gamma)$.
+
+```{python}
+log_pop = np.log(kline['population'])
+tools = kline['total_tools'].values
+
+with pm.Model() as scientific_model:
+    # Priors
+    theta_alpha = pm.Normal("theta_alpha", mu=0, sigma=2)
+    beta = pm.Normal("beta", mu=0, sigma=1)
+    theta_gamma = pm.Normal("theta_gamma", mu=0, sigma=1)
+
+    # Esperança em escala log
+    log_lambda = theta_alpha + beta * log_pop + theta_gamma
+    lambda_ = pm.math.exp(log_lambda)
+
+    # Likelihood
+    T_obs = pm.Poisson("total_tools", mu=lambda_, observed=tools)
+
+    # Amostragem
+    trace_scientific = pm.sample(2000, tune=1000, target_accept=0.95)
+    pm.compute_log_likelihood(trace_scientific)
+```
+
+```{python}
+az.summary(trace_scientific, var_names=["theta_alpha", "beta", "theta_gamma"], hdi_prob=0.89)
+
+```
+
+### Gerando predições do modelo científico
+
+```{python}
+posterior = trace_scientific.posterior
+
+# Recuperar parâmetros transformados
+alpha_samples = np.exp(posterior['theta_alpha'])
+beta_samples = posterior['beta']
+gamma_samples = np.exp(-posterior['theta_gamma'])
+
+# Grid de população para predições
+pop_pred = np.linspace(kline['population'].min(), kline['population'].max(), 200)
+
+# Calcular predições usando a fórmula científica
+pred_samples = []
+for i in range(len(alpha_samples.chain)):
+    for j in range(len(alpha_samples.draw)):
+        alpha_val = alpha_samples.isel(chain=i, draw=j).values
+        beta_val = beta_samples.isel(chain=i, draw=j).values
+        gamma_val = gamma_samples.isel(chain=i, draw=j).values
+        
+        pred = (alpha_val * (pop_pred ** beta_val)) / gamma_val
+        pred_samples.append(pred)
+
+pred_samples = np.array(pred_samples)
+
+# Calcular estatísticas
+mean_scientific = pred_samples.mean(axis=0)
+hdi_scientific = az.hdi(pred_samples, hdi_prob=0.89)
+```
+
+## Comparação dos Três Modelos
+
+Vamos comparar as predições dos três modelos em um único gráfico:
+
+```{python}
+plt.figure(figsize=(8, 6))
+
+# Dados observados (plotados apenas uma vez)
+sns.scatterplot(data=kline, x='population', y='total_tools', 
+                s=100, alpha=0.7, color='black', label='Dados observados')
+
+# 1. Modelo Linear com transformação log (escala original)
+plt.plot(np.exp(new_x), np.exp(new_pred_linear_mean), 
+         color='red', linewidth=2, label='Modelo Linear')
+plt.fill_between(np.exp(new_x),
+                 ic_linear.sel(hdi='lower')['x'],
+                 ic_linear.sel(hdi='higher')['x'],
+                 alpha=0.3, color='#f3ae1a', 
+                 label='IC 95% Linear')
+
+# 2. Modelo Poisson (GLM)
+plt.plot(np.exp(log_pop_new), new_pred_poisson_mean.values, 
+         color='blue', linewidth=2, linestyle='--', label='Modelo Poisson')
+az.plot_hdi(
+    np.exp(log_pop_new),
+    new_pred_poisson.posterior_predictive.total_tools,
+    hdi_prob=0.95,
+    color='#1f77b4',
+    fill_kwargs={'alpha': 0.3, 'label': 'IC 95% Poisson'},
+)
+
+# 3. Modelo Científico (Mecanicista)
+# Modelo Científico
+plt.plot(pop_pred, mean_scientific, color='#2ca02c', linewidth=3, 
+         label='Modelo Mecanicista')
+plt.fill_between(pop_pred, hdi_scientific[:, 0], hdi_scientific[:, 1],
+                 color='#2ca02c', alpha=0.2, label = 'IC Mecanicista) 95%')
+
+# Configurações do gráfico
+plt.xlabel('População', fontsize=14)
+plt.ylabel('Número total de ferramentas', fontsize=14)
+plt.title('Comparação dos Três Modelos', fontsize=16)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+
+```

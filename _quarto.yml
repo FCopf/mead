@@ -1,0 +1,39 @@
+project:
+  type: website
+
+lang: pt
+
+website:
+  title: "Modelagem Estatística e Análise de Dados"
+  description: "Material didático sobre Modelagem Estatística e Análise de Dados, com exemplos práticos em R e Python. Cobre desde conceitos fundamentais e análise exploratória até métodos avançados, incluindo inferência bayesiana, modelos lineares generalizados e estatística multivariada."
+  site-url: "https://github.com/FCopf/MEAD"
+
+  repo-url: https://github.com/FCopf/MEAD
+  open-graph: true
+
+  # Navbar configuration
+  navbar:
+    background: "#032235"
+    search: true
+    logo: "images/MEAD-logo-white-sigla.png"
+    right: # Content on the right of the navbar
+       - icon: github
+         href: https://github.com/FCopf/MEAD
+         text: "GitHub"
+
+# Global format configuration
+format:
+  html:
+    theme:
+      light: zephyr
+    css: styles/custom.css
+    toc: true
+    number-sections: true
+    code-copy: true
+    code-overflow: wrap
+
+# Configura projeto para ser executado apenas localmente
+execute:
+  freeze: auto
+
+bibliography: references.bib

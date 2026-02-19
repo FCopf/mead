@@ -1,0 +1,24 @@
+---
+title: "Fundamentos de Probabilidades"
+description: "Definição de probabilidade, eventos independentes, probabilidade condicional e Teorema de Bayes."
+categories: [Probabilidade, Fundamentos]
+
+image: "../images/fundamentos-probabilidade.png"
+listing:
+  contents:
+    - ../content/fundamentos-probabilidade/espaco-amostral.qmd    
+    - ../content/fundamentos-probabilidade/combina-probabilidades.qmd
+    - ../content/fundamentos-probabilidade/probabilidade-condicional.qmd
+    - ../content/fundamentos-probabilidade/teorema-bayes.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories
+format:
+  html:
+    toc: true
+    number-sections: true
+---

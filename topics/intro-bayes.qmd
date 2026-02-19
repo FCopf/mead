@@ -1,0 +1,26 @@
+---
+title: "Introdução à Inferência Bayesiana"
+description: "Fundamentos da inferência bayesiana."
+categories: [Inferência, Estatística Bayesiana, Modelagem, Probabilidade]
+
+image: "../images/intro-bayes.png"
+listing:
+  contents:
+    - ../content/intro-bayes/intro-bayes-counting.qmd
+    - ../content/intro-bayes/intro-bayes-distr-prob.qmd
+    - ../content/intro-bayes/intro-bayes-modelo-bayesiano.qmd
+    - ../content/intro-bayes/intro-bayes-binomial-grid.qmd
+    - ../content/intro-bayes/intro-bayes-binomial-pymc.qmd
+    - ../content/intro-bayes/intro-bayes-modelo-normal-bayesiano-priori.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories
+format:
+  html:
+    toc: true
+    number-sections: true
+---

@@ -1,0 +1,83 @@
+---
+title: "Importando data frames a partir de arquivos CSV"
+subtitle: "Montar o Google Drive no Colab e importar dados de arquivos CSV usando pandas"
+
+image: "images/importa-dados-python.png"
+execute:
+  echo: true
+  warning: false
+  include: true
+  message: false
+  eval: false
+---
+
+---
+
+::: {.callout-tip title="Objetivos"}
+
+1. Conectar seu Google Drive ao Google Colab
+2. Navegar pelas pastas do Drive dentro do notebook
+3. Importar um arquivo CSV usando pandas diretamente de uma pasta
+
+:::
+
+::: {.callout-important}
+
+1. Antes de iniciar o tutorial, garanta que o arquivo `.csv` que você deseja importar esteja salvo em uma pasta dentro do seu Google Drive pessoal. 
+
+2. Neste tutorial, vamos assumir que temos um arquivo denominado `arquivo_exemplo.csv` que está salvo dentro do Google Drive na pasta `MyDrive/Projetos/Dados`
+
+:::
+
+## 🛠️ Preparação Inicial
+
+Vamos importar as bibliotecas necessárias:
+
+```{python}
+from google.colab import drive  # Permite que o Google Colab leia seu Google Drive
+import pandas as pd  # Análise e manipulação de dados
+```
+
+## 🔗 Etapa 1: Montando o Google Drive no Colab
+
+O primeiro passo é *montar* seu Google Drive, dentro do Google Colab. Isto pode ser feito com o comando `drive.mount()`. No exemplo abaixo, vamos pedir que as pasats de seu Google Dive sejam incluídas em uma estrutura de pastas dentro do caminho `"/content/drive"`.
+
+```{python}
+# Montar o Google Drive (vai solicitar permissão)
+drive.mount("/content/drive")
+```
+
+Após executar este comando, você verá um link de autorização de acesso ao Google Drive pelo Google Colab. Permita todos os acessos.
+
+### ✅ Verificando os arquivos e pastas
+
+Você agora será capaz de navegar pela estrutura de pastas do seu Drive. Por exemplo, você pode verificar se seu arquivo está realmente salvo com o comando `!ls`.
+
+```{python}
+# Listando arquivos e subpastas na pasta raiz do Drive
+!ls "/content/drive/MyDrive/MyDrive/Projetos/Dados"
+```
+
+## 📁 Etapa 2: Localizando seu Arquivo CSV
+
+Caso seu arquivo `arquivo_exemplo.csv` esteja listado na pasta acima, crie um objeto que conterá todo o caminho até o arquivo:
+
+```{python}
+caminho_arquivo = "/content/drive/MyDrive/Projetos/Dados/arquivo_exemplo.csv"
+```
+
+## 📊 Etapa 3: Lendo o CSV com pandas
+
+Leia o arquivo com a função `read_csv()` do pandas e salve-o em um data frame.
+
+```{python}
+# Lendo o CSV
+df = pd.read_csv(caminho_arquivo)
+
+# Verique se os dados foram importados corretamente
+print(df)
+```
+
+**Pronto!!** Após verificar se a importação foi feita corretamente, você pode utilizar o data frame no restante do código
+
+---

@@ -1,0 +1,21 @@
+---
+title: "Visualização de Dados"
+description: "Princípios de visualização de dados, gramática de gráficos e criação de plots estáticos e interativos."
+categories: [Visualização, ggplot2, R]
+image: "../images/visualizacao-dados.png"
+listing:
+  contents: 
+    - ../content/visualizacao-dados/graficos-r.qmd
+    - ../content/visualizacao-dados/grafico-ggplot2.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories    
+format:
+  html:
+    toc: true
+    number-sections: true
+---

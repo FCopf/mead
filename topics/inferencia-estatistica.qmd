@@ -1,0 +1,22 @@
+---
+title: "Inferência Estatística"
+description: "Fundamentos da inferência estatística, abrangendo teorema central do limite e intervalos de confiança."
+categories: [Inferência, Probabilidade]
+image: "../images/inferencia-estatistica.jpg"
+listing:
+  contents:
+    - ../content/inferencia-estatistica/distr-norm.qmd
+    - ../content/inferencia-estatistica/teorema-central-limite.qmd
+    - ../content/inferencia-estatistica/int-conf.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories
+format:
+  html:
+    toc: true
+    number-sections: true
+---

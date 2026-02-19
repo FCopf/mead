@@ -1,0 +1,29 @@
+---
+title: "Modelos de Regressão Bayesianos"
+description: "Introdução aos modelos de regressão com abordagem bayesiana."
+categories: [
+      "Regressão",
+      "Inferência bayesiana",
+      "Distribuição a priori",
+      "Distribuição posterior"
+    ]
+
+image: "../images/modelos-regressao-bayes.png"
+listing:
+  contents:
+    - ../content/modelos-regressao-bayes/regressao-linear-bayesiana.qmd
+    - ../content/modelos-regressao-bayes/regressao-linear-bayesiana-bambi.qmd
+    - ../content/modelos-regressao-bayes/regressao-glm-hierarquico-apresentacao.qmd
+    - ../content/modelos-regressao-bayes/regressao-poisson.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories
+format:
+  html:
+    toc: true
+    number-sections: true
+---

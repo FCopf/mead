@@ -1,0 +1,25 @@
+---
+title: "Estatística Descritiva"
+description: "Representação de variáveis, medidas de tendência central e dispersão."
+categories: [Estatística Básica, Exploração de Dados, Visualização de Dados]
+image: "../images/estatistica-descritiva.jpg"
+listing:
+  contents: 
+    - ../content/estatistica-descritiva/varqualit.qmd
+    - ../content/estatistica-descritiva/varquant.qmd
+    - ../content/estatistica-descritiva/tendcentral.qmd
+    - ../content/estatistica-descritiva/variacao.qmd
+    - ../content/estatistica-descritiva/quartis.qmd
+    - ../content/estatistica-descritiva/escorez.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories  
+format:
+  html:
+    toc: true
+    number-sections: true
+---

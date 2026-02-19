@@ -1,0 +1,22 @@
+---
+title: "Análise de variância"
+description: "Modelos ANOVA para comparação de médias (simples, em blocos e fatorial)."
+categories: [Inferência, Testes Estatísticos, Modelos]
+image: "../images/anova.jpg"
+listing:
+  contents:
+    - ../content/anova/anova-simples.qmd
+    - ../content/anova/anova_blocos.qmd
+    - ../content/anova/teste-two_way.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories
+format:
+  html:
+    toc: true
+    number-sections: true
+---

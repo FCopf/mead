@@ -1,0 +1,21 @@
+arviz
+bambi
+matplotlib
+numpy
+palmerpenguins
+pandas
+pymc
+scikit-learn
+scipy
+seaborn
+xarray
+
+# Required for Quarto / Jupyter execution
+jupyter
+ipykernel
+jupyterlab
+
+# Recommended support packages
+ipython
+notebook
+

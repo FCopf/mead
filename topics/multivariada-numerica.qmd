@@ -1,0 +1,24 @@
+---
+title: "Tópicos Avançados em Ciência de Dados e Análise Multivariada"
+description: "Métodos avançados incluindo redução de dimensionalidade, agrupamento e classificação."
+categories: ["Análise multivariada", "Machine Learning", "Clustering"]
+
+image: "../images/analises-multivariadas.png"
+listing:
+  contents:
+    - ../content/multivariada-numerica/intro-matrizes.qmd
+    - ../content/multivariada-numerica/cossine-similarity.qmd
+    - ../content/multivariada-numerica/clustering.qmd
+    - ../content/multivariada-numerica/ordination.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories
+format:
+  html:
+    toc: true
+    number-sections: true
+---

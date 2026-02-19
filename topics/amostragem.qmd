@@ -1,0 +1,21 @@
+---
+title: "Amostragem"
+description: "Introdução aos conceitos fundamentais de amostragem em estatística, incluindo tipos de amostragem e considerações sobre precisão e acurácia."
+categories: [Fundamentos, Planejamento de Estudos]
+image: "../images/amostragem.jpg"
+listing:
+  contents: 
+    - ../content/amostragem/pop-amostra.qmd
+    - ../content/amostragem/tipos-amostragem.qmd
+  sort: false
+  type: default
+  fields: 
+    - image
+    - title
+    - description
+    - categories  
+format:
+  html:
+    toc: true
+    number-sections: true
+---

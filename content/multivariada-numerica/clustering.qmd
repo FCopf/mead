@@ -1,0 +1,14 @@
+---
+title: "Agrupamento (Clustering)"
+description: "Introdução aos métodos de agrupamento hierárquico e não hierárquico."
+categories: [Dendrograma, K-means, Árvore de Regressão Multivariada]
+image: "../../images/analises-multivariadas.png"
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+# Agrupamento (Clustering)
+
+(Conteúdo em construção)

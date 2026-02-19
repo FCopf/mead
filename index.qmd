@@ -1,0 +1,122 @@
+---
+slug: home
+weight: 10
+format:
+  html:
+    number-sections: false
+
+# Lista 1 - Fundamentos de Programação
+listing:
+  # 1. Fundamentos Computacionais
+  - id: fundamentos-computacionais
+    contents:
+      - topics/introducao-r.qmd
+      - topics/manipulacao-dados-R.qmd
+      - topics/visualizacao-dados.qmd
+      - topics/manipulacao-dados-python.qmd
+    sort: false
+    type: grid
+    fields: [title, subtitle, image]
+    categories: false
+
+  # 2. Estatística Descritiva e Análise Exploratória
+  - id: analise-exploratoria
+    contents:
+      - topics/estrutura-dados.qmd
+      - topics/estatistica-descritiva.qmd
+      - topics/medidas-associacao.qmd
+    sort: false
+    type: grid
+    fields: [title, subtitle, image]
+    categories: false
+
+  # 3. Fundamentos Teóricos
+  - id: fundamentos-teoricos
+    contents:
+      - topics/fundamentos-probabilidade.qmd
+      - topics/distribuicao-normal.qmd
+      - topics/amostragem.qmd
+      - topics/inferencia-estatistica.qmd
+      - topics/teste-hipoteses.qmd
+    sort: false
+    type: grid
+    fields: [title, subtitle, image]
+    categories: false
+
+  # 4. Modelos Lineares
+  - id: modelos-lineares
+    contents:
+      - topics/anova.qmd
+      - topics/regressao-linear.qmd
+      - topics/glms.qmd
+    sort: false
+    type: grid
+    fields: [title, subtitle, image]
+    categories: false
+
+  # 5. Inferência Bayesiana
+  - id: inferencia-bayesiana
+    contents:
+      - topics/intro-bayes.qmd
+      - topics/modelos-regressao-bayes.qmd
+    sort: false
+    type: grid
+    fields: [title, subtitle, image]
+    categories: false
+  
+  # 6. Análise Multivariada e Ecologia Numérica
+  - id: multivariada-numerica
+    contents:
+      - topics/multivariada-numerica.qmd
+    sort: false
+    type: grid
+    fields: [title, subtitle, image]
+    categories: false
+
+  # 7. Funções e modelos
+  - id: funcoes-modelos
+    contents:
+      - funcoes-modelos.qmd
+    sort: false
+    type: grid
+    fields:
+      - title
+      - subtitle
+      - image
+    categories: false
+---
+
+## Fundamentos Computacionais
+
+::: {#fundamentos-computacionais}
+:::
+
+## Estatística Descritiva e Análise Exploratória
+
+::: {#analise-exploratoria}
+:::
+
+## Fundamentos Teóricos
+
+::: {#fundamentos-teoricos}
+:::
+
+## Modelos Lineares
+
+::: {#modelos-lineares}
+:::
+
+## Inferência Bayesiana
+
+::: {#inferencia-bayesiana}
+:::
+
+## Análise Multivariada e Ecologia Numérica
+
+::: {#multivariada-numerica}
+:::
+
+## Funções e Modelos
+
+::: {#funcoes-modelos}
+:::
