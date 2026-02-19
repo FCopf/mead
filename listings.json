@@ -1,0 +1,180 @@
+[
+  {
+    "listing": "/topics/estatistica-descritiva.html",
+    "items": [
+      "/content/estatistica-descritiva/varqualit.html",
+      "/content/estatistica-descritiva/varquant.html",
+      "/content/estatistica-descritiva/tendcentral.html",
+      "/content/estatistica-descritiva/variacao.html",
+      "/content/estatistica-descritiva/quartis.html",
+      "/content/estatistica-descritiva/escorez.html"
+    ]
+  },
+  {
+    "listing": "/topics/teste-hipoteses.html",
+    "items": [
+      "/content/teste-hipoteses/intro-testehipot.html",
+      "/content/teste-hipoteses/teste-variancia.html",
+      "/content/teste-hipoteses/teste-t.html"
+    ]
+  },
+  {
+    "listing": "/topics/visualizacao-dados.html",
+    "items": [
+      "/content/visualizacao-dados/graficos-r.html",
+      "/content/visualizacao-dados/grafico-ggplot2.html"
+    ]
+  },
+  {
+    "listing": "/topics/amostragem.html",
+    "items": [
+      "/content/amostragem/pop-amostra.html",
+      "/content/amostragem/tipos-amostragem.html"
+    ]
+  },
+  {
+    "listing": "/topics/estrutura-dados.html",
+    "items": [
+      "/content/estrutura-dados/estrutura-tipo.html"
+    ]
+  },
+  {
+    "listing": "/topics/manipulacao-dados-python.html",
+    "items": [
+      "/content/manipulacao-dados-python/01-estrutura-linguagem-python.html",
+      "/content/manipulacao-dados-python/02-estrutura-tipo-python.html",
+      "/content/manipulacao-dados-python/03-estatistica-descrtitiva-python.html",
+      "/content/manipulacao-dados-python/04-medidas-associacao-python.html",
+      "/content/manipulacao-dados-python/importa-dados-python.html"
+    ]
+  },
+  {
+    "listing": "/topics/intro-bayes.html",
+    "items": [
+      "/content/intro-bayes/intro-bayes-counting.html",
+      "/content/intro-bayes/intro-bayes-distr-prob.html",
+      "/content/intro-bayes/intro-bayes-modelo-bayesiano.html",
+      "/content/intro-bayes/intro-bayes-binomial-grid.html",
+      "/content/intro-bayes/intro-bayes-binomial-pymc.html",
+      "/content/intro-bayes/intro-bayes-modelo-normal-bayesiano-priori.html"
+    ]
+  },
+  {
+    "listing": "/topics/glms.html",
+    "items": [
+      "/content/glms/intro.html"
+    ]
+  },
+  {
+    "listing": "/topics/manipulacao-dados-R.html",
+    "items": [
+      "/content/manipulacao-dados-R/tidyverse.html",
+      "/content/manipulacao-dados-R/import-export.html",
+      "/content/manipulacao-dados-R/pipe.html",
+      "/content/manipulacao-dados-R/transform.html"
+    ]
+  },
+  {
+    "listing": "/topics/inferencia-estatistica.html",
+    "items": [
+      "/content/inferencia-estatistica/teorema-central-limite.html",
+      "/content/inferencia-estatistica/int-conf.html"
+    ]
+  },
+  {
+    "listing": "/topics/distribuicao-normal.html",
+    "items": [
+      "/content/distribuicao-normal/distr-norm.html",
+      "/content/distribuicao-normal/distribuicao-normal-modelo.html",
+      "/content/distribuicao-normal/distribuicao-normal-probabilidade.html"
+    ]
+  },
+  {
+    "listing": "/topics/anova.html",
+    "items": [
+      "/content/anova/anova-simples.html"
+    ]
+  },
+  {
+    "listing": "/topics/funcoes-modelos.html",
+    "items": [
+      "/content/funcoes-modelos/funcoes-potencia.html"
+    ]
+  },
+  {
+    "listing": "/topics/fundamentos-probabilidade.html",
+    "items": [
+      "/content/fundamentos-probabilidade/espaco-amostral.html",
+      "/content/fundamentos-probabilidade/combina-probabilidades.html",
+      "/content/fundamentos-probabilidade/probabilidade-condicional.html",
+      "/content/fundamentos-probabilidade/teorema-bayes.html"
+    ]
+  },
+  {
+    "listing": "/topics/multivariada-numerica.html",
+    "items": [
+      "/content/multivariada-numerica/intro-matrizes.html",
+      "/content/multivariada-numerica/cossine-similarity.html",
+      "/content/multivariada-numerica/clustering.html",
+      "/content/multivariada-numerica/ordination.html"
+    ]
+  },
+  {
+    "listing": "/topics/introducao-r.html",
+    "items": [
+      "/content/introducao-r/estrutura-linguagem.html",
+      "/content/introducao-r/data-frames.html"
+    ]
+  },
+  {
+    "listing": "/topics/modelos-regressao-bayes.html",
+    "items": [
+      "/content/modelos-regressao-bayes/regressao-linear-bayesiana.html",
+      "/content/modelos-regressao-bayes/regressao-linear-bayesiana-bambi.html",
+      "/content/modelos-regressao-bayes/regressao-glm-hierarquico-apresentacao.html",
+      "/content/modelos-regressao-bayes/regressao-poisson.html"
+    ]
+  },
+  {
+    "listing": "/topics/regressao-linear.html",
+    "items": [
+      "/content/regressao-linear/metodo-minimos-quadrados-apresentacao.html",
+      "/content/regressao-linear/mmq-regressao-linear-simples.html",
+      "/content/regressao-linear/mmq-regressao-polinomial.html",
+      "/content/regressao-linear/regressao-linear-simples.html",
+      "/content/regressao-linear/regressao-linear-multipla.html"
+    ]
+  },
+  {
+    "listing": "/topics/medidas-associacao.html",
+    "items": [
+      "/content/medidas-associacao/biquali.html",
+      "/content/medidas-associacao/biquanti.html",
+      "/content/medidas-associacao/biquantquali.html"
+    ]
+  },
+  {
+    "listing": "/index.html",
+    "items": [
+      "/topics/introducao-r.html",
+      "/topics/manipulacao-dados-R.html",
+      "/topics/visualizacao-dados.html",
+      "/topics/manipulacao-dados-python.html",
+      "/topics/estrutura-dados.html",
+      "/topics/estatistica-descritiva.html",
+      "/topics/medidas-associacao.html",
+      "/topics/fundamentos-probabilidade.html",
+      "/topics/distribuicao-normal.html",
+      "/topics/amostragem.html",
+      "/topics/inferencia-estatistica.html",
+      "/topics/teste-hipoteses.html",
+      "/topics/anova.html",
+      "/topics/regressao-linear.html",
+      "/topics/glms.html",
+      "/topics/intro-bayes.html",
+      "/topics/modelos-regressao-bayes.html",
+      "/topics/multivariada-numerica.html",
+      "/topics/funcoes-modelos.html"
+    ]
+  }
+]

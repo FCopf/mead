@@ -1,0 +1,3136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.56">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Explorando o fluxo de trabalho bayesiano em modelos de regressão linear">
+
+<title>Fluxo de Trabalho na Modelagem Bayesiana – Modelagem Estatística e Análise de Dados</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles/custom.css">
+<meta property="og:title" content="Fluxo de Trabalho na Modelagem Bayesiana – Modelagem Estatística e Análise de Dados">
+<meta property="og:description" content="Explorando o fluxo de trabalho bayesiano em modelos de regressão linear">
+<meta property="og:image" content="https://github.com/FCopf/MEAD/content/modelos-regressao-bayes/images/fluxo-bayesiano-abstrato.png">
+<meta property="og:site_name" content="Modelagem Estatística e Análise de Dados">
+<meta property="og:image:height" content="1536">
+<meta property="og:image:width" content="1024">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/MEAD-logo-white-sigla.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Modelagem Estatística e Análise de Dados</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/FCopf/MEAD"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Nesta página</h2>
+   
+  <ul>
+  <li><a href="#preparação-do-ambiente" id="toc-preparação-do-ambiente" class="nav-link active" data-scroll-target="#preparação-do-ambiente"><span class="header-section-number">1</span> Preparação do ambiente</a></li>
+  <li><a href="#importação-e-visualização-dos-dados" id="toc-importação-e-visualização-dos-dados" class="nav-link" data-scroll-target="#importação-e-visualização-dos-dados"><span class="header-section-number">2</span> Importação e visualização dos dados</a></li>
+  <li><a href="#especificação-e-ajuste-do-modelo" id="toc-especificação-e-ajuste-do-modelo" class="nav-link" data-scroll-target="#especificação-e-ajuste-do-modelo"><span class="header-section-number">3</span> Especificação e ajuste do modelo</a></li>
+  <li><a href="#amostragem-mcmc" id="toc-amostragem-mcmc" class="nav-link" data-scroll-target="#amostragem-mcmc"><span class="header-section-number">4</span> Amostragem MCMC</a></li>
+  <li><a href="#verificação-das-priors" id="toc-verificação-das-priors" class="nav-link" data-scroll-target="#verificação-das-priors"><span class="header-section-number">5</span> Verificação das priors</a></li>
+  <li><a href="#diagnósticos-de-convergência" id="toc-diagnósticos-de-convergência" class="nav-link" data-scroll-target="#diagnósticos-de-convergência"><span class="header-section-number">6</span> Diagnósticos de convergência</a></li>
+  <li><a href="#resumo-do-ajuste" id="toc-resumo-do-ajuste" class="nav-link" data-scroll-target="#resumo-do-ajuste"><span class="header-section-number">7</span> Resumo do ajuste</a></li>
+  <li><a href="#verificação-das-posteriores-e-comparação-com-as-priors" id="toc-verificação-das-posteriores-e-comparação-com-as-priors" class="nav-link" data-scroll-target="#verificação-das-posteriores-e-comparação-com-as-priors"><span class="header-section-number">8</span> Verificação das posteriores e comparação com as priors</a></li>
+  <li><a href="#predição-bayesiana" id="toc-predição-bayesiana" class="nav-link" data-scroll-target="#predição-bayesiana"><span class="header-section-number">9</span> Predição Bayesiana</a>
+  <ul class="collapse">
+  <li><a href="#predição-sobre-a-reta-média-incerteza-epistêmica" id="toc-predição-sobre-a-reta-média-incerteza-epistêmica" class="nav-link" data-scroll-target="#predição-sobre-a-reta-média-incerteza-epistêmica"><span class="header-section-number">9.1</span> Predição sobre a reta média (Incerteza epistêmica)</a></li>
+  <li><a href="#predição-sobre-novos-pontos-incerteza-epistêmica-aleatória" id="toc-predição-sobre-novos-pontos-incerteza-epistêmica-aleatória" class="nav-link" data-scroll-target="#predição-sobre-novos-pontos-incerteza-epistêmica-aleatória"><span class="header-section-number">9.2</span> Predição sobre novos pontos (Incerteza epistêmica + aleatória)</a></li>
+  </ul></li>
+  <li><a href="#estrutura-de-código-bambi-vs-pymc" id="toc-estrutura-de-código-bambi-vs-pymc" class="nav-link" data-scroll-target="#estrutura-de-código-bambi-vs-pymc"><span class="header-section-number">10</span> Estrutura de código: Bambi vs PyMC</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Fluxo de Trabalho na Modelagem Bayesiana</h1>
+<p class="subtitle lead">Do modelo linear à distribuição a posteriori</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Inferência bayesiana</div>
+    <div class="quarto-category">Modelagem estatística</div>
+    <div class="quarto-category">Bambi</div>
+    <div class="quarto-category">PyMC</div>
+    <div class="quarto-category">Fluxo de trabalho</div>
+    <div class="quarto-category">Distribuições a priori</div>
+    <div class="quarto-category">Inferência a posteriori</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Explorando o fluxo de trabalho bayesiano em modelos de regressão linear
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<hr>
+<p>A modelagem bayesiana constitui um processo sistemático e <strong>iterativo</strong> para integrar dados e conhecimento prévio, visando a compreensão aprofundada de um fenômeno. O fluxo de trabalho bayesiano é um ciclo contínuo que envolve:</p>
+<ul>
+<li><strong>Especificação do modelo:</strong> Definir a estrutura probabilística que representa o fenômeno e as relações entre as variáveis.</li>
+<li><strong>Definição de priors:</strong> Incorporar conhecimento prévio sobre os parâmetros do modelo através de distribuições de probabilidade.</li>
+<li><strong>Amostragem da posteriori:</strong> Computar a distribuição de probabilidade dos parâmetros, combinando priors e a verossimilhança dos dados.</li>
+<li><strong>Diagnóstico:</strong> Avaliar a qualidade e a convergência dos resultados da amostragem (e.g., verificar se os algoritmos de MCMC funcionaram corretamente).</li>
+<li><strong>Inferência:</strong> Extrair conclusões sobre os parâmetros e o modelo a partir da distribuição posteriori.</li>
+<li><strong>Validação:</strong> Avaliar o desempenho do modelo, verificando sua capacidade de reproduzir os dados observados, prever novos dados ou se está alinhado com conhecimento externo.</li>
+<li><strong>Predição:</strong> Utilizar o modelo ajustado para fazer previsões sobre observações futuras.</li>
+</ul>
+<p>Descobertas ou problemas identificados em etapas posteriores (como diagnóstico ou validação) frequentemente levam à revisão e ao refinamento de decisões tomadas em etapas anteriores (como a especificação do modelo ou a escolha das priors). Para uma dsicussão detalhada do fluxo de trabalho Bayesiano, veja o texto <a href="https://sites.stat.columbia.edu/gelman/research/unpublished/Bayesian_Workflow_article.pdf">Bayesian workflow</a>.</p>
+<!-- INTERFACE_BLOCK_START -->
+<p>Para demonstrar este fluxo de trabalho de forma prática, utilizaremos a biblioteca <a href="https://bambinos.github.io/bambi/" target="_blank"><strong>Bambi</strong></a> (BAyesian Model-Building Interface), uma interface de alto nível construída sobre o <a href="https://www.pymc.io/welcome.html" target="_blank"><strong>PyMC</strong></a> que simplifica a implementação de modelos bayesianos comuns em Python. A biblioteca Bambi utiliza uma sintaxe baseada em fórmulas, semelhante àquela encontrada em pacotes R como <a href="https://github.com/lme4/lme4">lme4</a> ou <a href="https://paulbuerkner.com/brms/">brms</a>, permitindo que nos concentremos mais nas etapas analíticas do fluxo de trabalho do que nos detalhes computacionais subjacentes. <!-- INTERFACE_BLOCK_END --></p>
+<p>Nosso objetivo será percorrer estas etapas utilizando o conjunto de dados <a href="https://github.com/FCopf/datasets/blob/main/altura_adultos_subset.csv" target="_blank"><code>altura_adultos_subset.csv</code></a>, que descreve a relação entre <strong>altura de indivíduos</strong> e <strong>número do calçado</strong>. Ao fazer isso, esperamos que você reflita criticamente sobre como a avaliação sistemática e o refinamento contínuo do modelo, facilitados por ferramentas como Bambi/PyMC, são essenciais para extrair conhecimento científico robusto sobre os processos subjacentes aos dados observados.</p>
+<p>Nosso objetivo será percorrer cada uma das etapas do fluxo de trabalho bayesiano utilizando o conjunto de dados <a href="https://github.com/FCopf/datasets/blob/main/altura_adultos_subset.csv" target="_blank"><code>altura_adultos_subset.csv</code></a>, que descreve a relação entre a <strong>altura de indivíduos</strong> e o <strong>número do calçado</strong>.</p>
+<hr>
+<section id="preparação-do-ambiente" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="preparação-do-ambiente"><span class="header-section-number">1</span> Preparação do ambiente</h2>
+<div id="5c363d64" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importação das principais bibliotecas necessárias para análise de dados, visualização, modelagem bayesiana e diagnóstico.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> arviz <span class="im">as</span> az</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bambi <span class="im">as</span> bmb</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importação-e-visualização-dos-dados" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="importação-e-visualização-dos-dados"><span class="header-section-number">2</span> Importação e visualização dos dados</h2>
+<p>Vamos visualizar a relação entre o número do calçado e a altura. Esta etapa é importante para termos uma ideia preliminar do padrão nos dados a fim de julgarmos qual modelo adequado para descrever esta relação.</p>
+<div id="a41cb235" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/FCopf/datasets/refs/heads/main/altura_adultos_subset.csv'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="4a0e80f9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sns.regplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'calcado'</span>, y<span class="op">=</span><span class="st">'altura'</span>, ci<span class="op">=</span><span class="va">None</span>, scatter<span class="op">=</span><span class="va">True</span>, fit_reg<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-4-output-1.png" width="593" height="429" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Os dados observados, sugere que um modelo linear é razoável se buscamos prever a altura de uma passoal adultra como função do número do calçado o que justifica a implementação de um modelo de regressão linear simples.</p>
+</section>
+<section id="especificação-e-ajuste-do-modelo" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="especificação-e-ajuste-do-modelo"><span class="header-section-number">3</span> Especificação e ajuste do modelo</h2>
+<p>Especificamos um modelo de regressão linear bayesiano em que a <code>altura</code> é modelada como uma função do número do <code>calçado</code>. A biblioteca Bambi adota uma sintaxe onde expressamos a relação entre as variáveis na forma <code>y ~ x</code>. Essa notação indica que a variável resposta (<code>y</code>) é explicada linearmente pela variável preditora (<code>x</code>), o que corresponde, ao modelo:<br>
+<span class="math display">\[
+y = \beta_0 + \beta_1 x.
+\]</span></p>
+<p>Nesse caso, o Bambi interpreta a fórmula <code>altura ~ calcado</code> como uma especificação de que a altura dos indivíduos depende linearmente do número do calçado, com coeficientes a serem estimados a partir dos dados.</p>
+<div id="3165ca00" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mod <span class="op">=</span> bmb.Model(<span class="st">"altura ~ calcado"</span>, df)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mod</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>       Formula: altura ~ calcado
+        Family: gaussian
+          Link: mu = identity
+  Observations: 5
+        Priors: 
+    target = mu
+        Common-level effects
+            Intercept ~ Normal(mu: 172.0, sigma: 300.3331)
+            calcado ~ Normal(mu: 0.0, sigma: 7.3612)
+        
+        Auxiliary parameters
+            sigma ~ HalfStudentT(nu: 4.0, sigma: 11.8659)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Estrutura do modelo em Bambi">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Estrutura do modelo em Bambi
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ao inspecionair o objeto <code>mod</code>, podemos verificar um resumo da estrutura do modelo especificado:</p>
+<ul>
+<li><strong>Formula</strong>: <code>altura ~ calcado</code>: Descreve a fórmula estatística especificada no modelo.</li>
+<li><strong>Family</strong>: <code>gaussian</code>: Indica a família da distribuição de probabilidade que Bambi assumiu para a variável resposta.</li>
+<li><strong>Link</strong>: <code>mu = identity</code>: Especifica a função de ligação que conecta o modelo linear ao parâmetro da família da distribuição.</li>
+<li><strong>Observations</strong>: <code>5</code>: Mostra o número de linhas (observações) no DataFrame que foram usadas para construir o modelo.</li>
+<li><strong>Priors</strong>: Distribuições <em>a priori</em>. Se não especificadas pelo usuário, o Bambi atribui priors padrão razoáveis parea o conjuto de dados e o modelo utilizado.
+<ul>
+<li><strong>target = mu</strong>: Indica que o modelo linear está focando em estimar a média (mu) da distribuição Gaussiana.
+<ul>
+<li><strong>Common-level effects</strong>: Lista os parâmetros associados aos termos fixos no modelo linear.</li>
+<li><strong>Intercept ~ Normal</strong>(…): Define a prior para o intercepto (<span class="math inline">\(\beta_0\)</span>)</li>
+<li><strong>calcado ~ Normal</strong>(…): Define a prior para o coeficiente de regressão associado à variável calcado (<span class="math inline">\(\beta_1\)</span>).</li>
+</ul></li>
+<li><strong>Auxiliary parameters</strong>: Parâmetros não diretamente modelados pelo predictor linear.
+<ul>
+<li><strong>sigma ~ HalfStudentT</strong>(…): Define a prior para o parâmetro de desvio padrão (<span class="math inline">\(\sigma\)</span>).</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="amostragem-mcmc" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="amostragem-mcmc"><span class="header-section-number">4</span> Amostragem MCMC</h2>
+<p>Realizamos a <strong>amostragem MCMC</strong> (<em>Markov Chain Monte Carlo</em>) para obter amostras da <strong>distribuição a posteriori</strong> dos parâmetros, combinando as informações fornecidas pelos dados com as distribuições a priori.</p>
+<div id="6ad3b9b3" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mod_fit <span class="op">=</span> mod.fit()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mod_fit</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"c1d949d2d9a34e7691f32e968d351c2e","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+
+            <div>
+              <div class="xr-header">
+                <div class="xr-obj-type">arviz.InferenceData</div>
+              </div>
+              <ul class="xr-sections group-sections">
+              
+            <li class="xr-section-item">
+                  <input id="idata_posterior0de5bee7-d712-432a-b5d3-0912a26977c5" class="xr-section-summary-in" type="checkbox">
+                  <label for="idata_posterior0de5bee7-d712-432a-b5d3-0912a26977c5" class="xr-section-summary">posterior</label>
+                  <div class="xr-section-inline-details"></div>
+                  <div class="xr-section-details">
+                      <ul id="xr-dataset-coord-list" class="xr-var-list">
+                          <div style="padding-left:2rem;"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 104kB
+Dimensions:    (chain: 4, draw: 1000)
+Coordinates:
+  * chain      (chain) int64 32B 0 1 2 3
+  * draw       (draw) int64 8kB 0 1 2 3 4 5 6 7 ... 993 994 995 996 997 998 999
+Data variables:
+    sigma      (chain, draw) float64 32kB 12.82 5.324 4.266 ... 7.573 19.83 4.2
+    Intercept  (chain, draw) float64 32kB -6.19 79.7 72.66 ... 3.963 11.6 104.6
+    calcado    (chain, draw) float64 32kB 4.255 2.204 2.379 ... 3.947 1.687
+Attributes:
+    created_at:                  2026-02-19T12:17:54.860559+00:00
+    arviz_version:               0.23.4
+    inference_library:           pymc
+    inference_library_version:   5.25.1
+    sampling_time:               1.056750774383545
+    tuning_steps:                1000
+    modeling_interface:          bambi
+    modeling_interface_version:  0.15.0</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-f3439fbc-5d5d-4aad-8e21-d93ecb884085" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-f3439fbc-5d5d-4aad-8e21-d93ecb884085" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span class="xr-has-index">chain</span>: 4</li><li><span class="xr-has-index">draw</span>: 1000</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-24f563c8-8247-4f1a-aca7-954ae05aed78" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-24f563c8-8247-4f1a-aca7-954ae05aed78" class="xr-section-summary">Coordinates: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">chain</span></div><div class="xr-var-dims">(chain)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">0 1 2 3</div><input id="attrs-08d804c0-2f73-42d4-add8-c851620c8ddb" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-08d804c0-2f73-42d4-add8-c851620c8ddb" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-0715b2b1-77ec-4716-ac90-2c0b287eca8b" class="xr-var-data-in" type="checkbox"><label for="data-0715b2b1-77ec-4716-ac90-2c0b287eca8b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0, 1, 2, 3])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">draw</span></div><div class="xr-var-dims">(draw)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">0 1 2 3 4 5 ... 995 996 997 998 999</div><input id="attrs-fa2825f7-65eb-4178-a927-9c257dc998bb" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-fa2825f7-65eb-4178-a927-9c257dc998bb" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-15917860-efeb-41df-84f8-94b1a46ac2a0" class="xr-var-data-in" type="checkbox"><label for="data-15917860-efeb-41df-84f8-94b1a46ac2a0" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([  0,   1,   2, ..., 997, 998, 999], shape=(1000,))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-1491ab8b-2818-4845-8309-54964e437578" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-1491ab8b-2818-4845-8309-54964e437578" class="xr-section-summary">Data variables: <span>(3)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>sigma</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">12.82 5.324 4.266 ... 19.83 4.2</div><input id="attrs-5ce9d7b8-b35f-4f2f-a18d-5c714767b52b" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-5ce9d7b8-b35f-4f2f-a18d-5c714767b52b" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-8139ff5e-9aef-43e5-b4fe-cbd47f6bf33c" class="xr-var-data-in" type="checkbox"><label for="data-8139ff5e-9aef-43e5-b4fe-cbd47f6bf33c" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[12.81741535,  5.32434608,  4.26571042, ...,  7.19993658,
+        18.07536279, 15.50659824],
+       [ 7.26439627,  9.49991108,  9.55902361, ..., 11.4661689 ,
+        10.74318121,  6.98709945],
+       [15.47477747, 13.03995877, 14.70813622, ...,  6.28721435,
+         8.42474631,  9.2594542 ],
+       [ 5.93351046,  4.58998872, 12.66511175, ...,  7.57266598,
+        19.82840813,  4.19956176]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>Intercept</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-6.19 79.7 72.66 ... 11.6 104.6</div><input id="attrs-3c2b2498-1f2f-4821-a7bb-541dd1c8097f" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-3c2b2498-1f2f-4821-a7bb-541dd1c8097f" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-b44c2c54-e4e5-48a5-9b5c-92c1a01d819b" class="xr-var-data-in" type="checkbox"><label for="data-b44c2c54-e4e5-48a5-9b5c-92c1a01d819b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[ -6.19002754,  79.69758448,  72.65792859, ...,  66.34573898,
+         11.42168586,   0.21231097],
+       [113.37660505,  83.33559985,  77.07392243, ...,  -8.89825319,
+         56.66426362,  31.95409566],
+       [ 27.282223  , -43.20413615,  60.13479023, ...,  92.20121133,
+         34.81016428,  51.79221444],
+       [ 49.1165146 ,  78.32703166,  12.44660229, ...,   3.96294101,
+         11.60458819, 104.57452517]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>calcado</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">4.255 2.204 2.379 ... 3.947 1.687</div><input id="attrs-c66eb468-c7a6-4576-b9e0-c5a38b27b5bc" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-c66eb468-c7a6-4576-b9e0-c5a38b27b5bc" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-4876c28e-3e16-4f6d-be2c-2b5da585cc9b" class="xr-var-data-in" type="checkbox"><label for="data-4876c28e-3e16-4f6d-be2c-2b5da585cc9b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[4.25496197, 2.20358419, 2.37866834, ..., 2.62769952, 3.99674521,
+        4.46528147],
+       [1.45262439, 2.28667928, 2.40997987, ..., 4.46953765, 2.64979557,
+        3.37974788],
+       [3.8324902 , 4.88799605, 2.61513966, ..., 1.8536024 , 3.36991379,
+        2.91825591],
+       [2.9832878 , 2.35062828, 3.94609027, ..., 4.12731208, 3.94672787,
+        1.6866787 ]], shape=(4, 1000))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-e54bfbf2-72fa-413a-aea5-8fd8459079af" class="xr-section-summary-in" type="checkbox"><label for="section-e54bfbf2-72fa-413a-aea5-8fd8459079af" class="xr-section-summary">Indexes: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>chain</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-f1a86252-3f89-4637-8588-fa522a490b69" class="xr-index-data-in" type="checkbox"><label for="index-f1a86252-3f89-4637-8588-fa522a490b69" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0, 1, 2, 3], dtype='int64', name='chain'))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>draw</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-e97e1841-a3fa-4a89-aad7-9dea918b5f03" class="xr-index-data-in" type="checkbox"><label for="index-e97e1841-a3fa-4a89-aad7-9dea918b5f03" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+       ...
+       990, 991, 992, 993, 994, 995, 996, 997, 998, 999],
+      dtype='int64', name='draw', length=1000))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-70640f3d-c666-4fe0-91b6-b4c9f3505b0c" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-70640f3d-c666-4fe0-91b6-b4c9f3505b0c" class="xr-section-summary">Attributes: <span>(8)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>created_at :</span></dt><dd>2026-02-19T12:17:54.860559+00:00</dd><dt><span>arviz_version :</span></dt><dd>0.23.4</dd><dt><span>inference_library :</span></dt><dd>pymc</dd><dt><span>inference_library_version :</span></dt><dd>5.25.1</dd><dt><span>sampling_time :</span></dt><dd>1.056750774383545</dd><dt><span>tuning_steps :</span></dt><dd>1000</dd><dt><span>modeling_interface :</span></dt><dd>bambi</dd><dt><span>modeling_interface_version :</span></dt><dd>0.15.0</dd></dl></div></li></ul></div></div><br></div>
+                      </ul>
+                  </div>
+            </li>
+            
+            <li class="xr-section-item">
+                  <input id="idata_sample_statse3429d0d-a4c4-4c1a-b685-3690e22fe517" class="xr-section-summary-in" type="checkbox">
+                  <label for="idata_sample_statse3429d0d-a4c4-4c1a-b685-3690e22fe517" class="xr-section-summary">sample_stats</label>
+                  <div class="xr-section-inline-details"></div>
+                  <div class="xr-section-details">
+                      <ul id="xr-dataset-coord-list" class="xr-var-list">
+                          <div style="padding-left:2rem;"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 528kB
+Dimensions:                (chain: 4, draw: 1000)
+Coordinates:
+  * chain                  (chain) int64 32B 0 1 2 3
+  * draw                   (draw) int64 8kB 0 1 2 3 4 5 ... 995 996 997 998 999
+Data variables: (12/18)
+    reached_max_treedepth  (chain, draw) bool 4kB False False ... False False
+    energy                 (chain, draw) float64 32kB 30.27 30.68 ... 30.95
+    acceptance_rate        (chain, draw) float64 32kB 1.0 0.6788 ... 0.9679
+    perf_counter_start     (chain, draw) float64 32kB 7.678e+04 ... 7.678e+04
+    index_in_trajectory    (chain, draw) int64 32kB 2 2 -1 -2 -2 2 ... 0 2 2 2 3
+    lp                     (chain, draw) float64 32kB -29.4 -27.12 ... -28.84
+    ...                     ...
+    tree_depth             (chain, draw) int64 32kB 2 2 2 2 2 2 ... 2 1 2 2 2 3
+    n_steps                (chain, draw) float64 32kB 3.0 3.0 3.0 ... 3.0 7.0
+    perf_counter_diff      (chain, draw) float64 32kB 0.0001957 ... 0.0003335
+    process_time_diff      (chain, draw) float64 32kB 0.0001957 ... 0.0003336
+    energy_error           (chain, draw) float64 32kB -0.08676 ... -1.165
+    max_energy_error       (chain, draw) float64 32kB -0.1561 1.997 ... -1.435
+Attributes:
+    created_at:                  2026-02-19T12:17:54.873214+00:00
+    arviz_version:               0.23.4
+    inference_library:           pymc
+    inference_library_version:   5.25.1
+    sampling_time:               1.056750774383545
+    tuning_steps:                1000
+    modeling_interface:          bambi
+    modeling_interface_version:  0.15.0</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-90429807-f777-4268-af6f-1244e05282da" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-90429807-f777-4268-af6f-1244e05282da" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span class="xr-has-index">chain</span>: 4</li><li><span class="xr-has-index">draw</span>: 1000</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-b6a29ddf-ce5a-4ea8-948c-e08f1ca49b75" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-b6a29ddf-ce5a-4ea8-948c-e08f1ca49b75" class="xr-section-summary">Coordinates: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">chain</span></div><div class="xr-var-dims">(chain)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">0 1 2 3</div><input id="attrs-f8bfb9b5-f172-4f22-94c0-9702d7074717" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-f8bfb9b5-f172-4f22-94c0-9702d7074717" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-31e15d29-0d18-4fe8-b5c2-10458170be3d" class="xr-var-data-in" type="checkbox"><label for="data-31e15d29-0d18-4fe8-b5c2-10458170be3d" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0, 1, 2, 3])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">draw</span></div><div class="xr-var-dims">(draw)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">0 1 2 3 4 5 ... 995 996 997 998 999</div><input id="attrs-c7ab6f10-0207-49eb-b2e4-7946b0f497e2" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-c7ab6f10-0207-49eb-b2e4-7946b0f497e2" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-1eb04707-eb50-471d-aa2d-f4957906ecb2" class="xr-var-data-in" type="checkbox"><label for="data-1eb04707-eb50-471d-aa2d-f4957906ecb2" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([  0,   1,   2, ..., 997, 998, 999], shape=(1000,))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-f2b7b929-6211-47d3-9a0e-32d78c18d720" class="xr-section-summary-in" type="checkbox"><label for="section-f2b7b929-6211-47d3-9a0e-32d78c18d720" class="xr-section-summary">Data variables: <span>(18)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>reached_max_treedepth</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">bool</div><div class="xr-var-preview xr-preview">False False False ... False False</div><input id="attrs-aa9a29ac-99a4-4107-8fe1-101866e880c3" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-aa9a29ac-99a4-4107-8fe1-101866e880c3" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-73badd93-2870-4563-89df-2f3bb73a8f27" class="xr-var-data-in" type="checkbox"><label for="data-73badd93-2870-4563-89df-2f3bb73a8f27" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>energy</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">30.27 30.68 28.56 ... 30.91 30.95</div><input id="attrs-08b0f500-f0bc-4cd0-8ddb-a315e2f798e4" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-08b0f500-f0bc-4cd0-8ddb-a315e2f798e4" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-dd283545-494a-4b7c-9fc7-5e20c9be4b65" class="xr-var-data-in" type="checkbox"><label for="data-dd283545-494a-4b7c-9fc7-5e20c9be4b65" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[30.27393878, 30.67543373, 28.56101895, ..., 29.28834498,
+        30.75944379, 34.44819584],
+       [29.90123906, 28.70629638, 27.64538882, ..., 29.79278723,
+        30.39238441, 30.32281733],
+       [30.82192164, 35.95668999, 34.72839293, ..., 30.13014212,
+        29.11322617, 27.53532614],
+       [30.38110092, 26.96631799, 29.53502712, ..., 28.56744654,
+        30.91345457, 30.95141848]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>acceptance_rate</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">1.0 0.6788 0.5379 ... 0.8919 0.9679</div><input id="attrs-c27f7fce-0410-4e01-8abf-e34a79548b12" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-c27f7fce-0410-4e01-8abf-e34a79548b12" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-beae77e3-1dbe-4f2a-8ba3-bb295e68290f" class="xr-var-data-in" type="checkbox"><label for="data-beae77e3-1dbe-4f2a-8ba3-bb295e68290f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[1.        , 0.67878498, 0.5379292 , ..., 0.71582217, 0.73838575,
+        0.78614672],
+       [0.26708511, 0.80102127, 1.        , ..., 0.99856967, 0.97472883,
+        0.78149229],
+       [1.        , 0.34647542, 0.97975062, ..., 0.18083964, 0.96185254,
+        0.96531319],
+       [0.00989953, 0.96340269, 0.22685756, ..., 0.93412117, 0.89194835,
+        0.96785717]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>perf_counter_start</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">7.678e+04 7.678e+04 ... 7.678e+04</div><input id="attrs-649e0ad9-f4db-4298-98f4-f5e7ed4bc64f" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-649e0ad9-f4db-4298-98f4-f5e7ed4bc64f" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d72d9e31-ae55-4310-a794-22d8a15c7dcf" class="xr-var-data-in" type="checkbox"><label for="data-d72d9e31-ae55-4310-a794-22d8a15c7dcf" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[76782.59272149, 76782.59298821, 76782.59326042, ...,
+        76782.94385301, 76782.94410061, 76782.94434225],
+       [76782.60839864, 76782.60866101, 76782.60908722, ...,
+        76782.92483403, 76782.92510155, 76782.92561194],
+       [76782.62023255, 76782.62050318, 76782.62093457, ...,
+        76782.97129487, 76782.97153542, 76782.97177893],
+       [76782.61768904, 76782.61793218, 76782.61897322, ...,
+        76782.99912862, 76782.99937174, 76782.99961328]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>index_in_trajectory</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">2 2 -1 -2 -2 2 3 ... 1 0 0 2 2 2 3</div><input id="attrs-eac315f3-97d6-42be-b897-d7c495778c4c" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-eac315f3-97d6-42be-b897-d7c495778c4c" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-5a68d78a-5a73-4065-9c44-dc0ed94ceb93" class="xr-var-data-in" type="checkbox"><label for="data-5a68d78a-5a73-4065-9c44-dc0ed94ceb93" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[ 2,  2, -1, ...,  0,  2, -1],
+       [ 0,  1, -1, ...,  2,  3, -1],
+       [ 1,  3, -2, ...,  0, -2, -1],
+       [ 0,  2, -2, ...,  2,  2,  3]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>lp</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-29.4 -27.12 ... -30.66 -28.84</div><input id="attrs-d86a1195-63c3-46dc-afb0-e156a98aa1c0" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-d86a1195-63c3-46dc-afb0-e156a98aa1c0" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-2ce695bb-9275-4708-8113-189fd281ed18" class="xr-var-data-in" type="checkbox"><label for="data-2ce695bb-9275-4708-8113-189fd281ed18" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[-29.40385555, -27.1203794 , -27.7456118 , ..., -26.42615354,
+        -30.21853676, -30.71018626],
+       [-27.45173278, -27.60796675, -27.34997936, ..., -28.90480287,
+        -28.80930955, -27.21956464],
+       [-30.6292007 , -33.76882204, -29.21037938, ..., -28.10749287,
+        -27.07349483, -27.13772958],
+       [-26.51487079, -26.86958249, -28.67399841, ..., -28.12686346,
+        -30.65672201, -28.84172835]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>step_size_bar</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.6221 0.6221 ... 0.5931 0.5931</div><input id="attrs-a9b8d401-da78-4723-9688-a83c515972ea" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-a9b8d401-da78-4723-9688-a83c515972ea" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-293173e4-ac14-471b-aa08-a7a488287479" class="xr-var-data-in" type="checkbox"><label for="data-293173e4-ac14-471b-aa08-a7a488287479" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[0.622073  , 0.622073  , 0.622073  , ..., 0.622073  , 0.622073  ,
+        0.622073  ],
+       [0.67658689, 0.67658689, 0.67658689, ..., 0.67658689, 0.67658689,
+        0.67658689],
+       [0.73021543, 0.73021543, 0.73021543, ..., 0.73021543, 0.73021543,
+        0.73021543],
+       [0.59309938, 0.59309938, 0.59309938, ..., 0.59309938, 0.59309938,
+        0.59309938]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>diverging</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">bool</div><div class="xr-var-preview xr-preview">False False False ... False False</div><input id="attrs-796041df-a285-42ce-9d63-476105ed0489" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-796041df-a285-42ce-9d63-476105ed0489" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-e516e84a-7925-4a28-906f-4cd7be3f06b5" class="xr-var-data-in" type="checkbox"><label for="data-e516e84a-7925-4a28-906f-4cd7be3f06b5" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>divergences</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0</div><input id="attrs-b4f1c5a3-44f6-49fc-b9e1-71237c5026b9" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-b4f1c5a3-44f6-49fc-b9e1-71237c5026b9" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-079f1b9a-baa5-4d40-b89a-8dd41092776a" class="xr-var-data-in" type="checkbox"><label for="data-079f1b9a-baa5-4d40-b89a-8dd41092776a" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0],
+       [0, 0, 0, ..., 0, 0, 0]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>step_size</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.6071 0.6071 ... 0.4018 0.4018</div><input id="attrs-0bdb4cd3-c5a6-4a0c-93ec-c7c3145a8fad" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-0bdb4cd3-c5a6-4a0c-93ec-c7c3145a8fad" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-b3b054a7-6d06-448e-ae61-13be499a532d" class="xr-var-data-in" type="checkbox"><label for="data-b3b054a7-6d06-448e-ae61-13be499a532d" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[0.60705735, 0.60705735, 0.60705735, ..., 0.60705735, 0.60705735,
+        0.60705735],
+       [0.59858393, 0.59858393, 0.59858393, ..., 0.59858393, 0.59858393,
+        0.59858393],
+       [0.8307564 , 0.8307564 , 0.8307564 , ..., 0.8307564 , 0.8307564 ,
+        0.8307564 ],
+       [0.40181627, 0.40181627, 0.40181627, ..., 0.40181627, 0.40181627,
+        0.40181627]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>smallest_eigval</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">nan nan nan nan ... nan nan nan nan</div><input id="attrs-86769f76-2472-4be6-ad66-b861230786ae" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-86769f76-2472-4be6-ad66-b861230786ae" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-886f78be-fa0c-4245-b422-016ed440e62e" class="xr-var-data-in" type="checkbox"><label for="data-886f78be-fa0c-4245-b422-016ed440e62e" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>largest_eigval</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">nan nan nan nan ... nan nan nan nan</div><input id="attrs-39d27f35-f9b3-4e3f-b778-354928136788" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-39d27f35-f9b3-4e3f-b778-354928136788" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-91f3004d-9a7a-4361-bf20-50712c3f73d7" class="xr-var-data-in" type="checkbox"><label for="data-91f3004d-9a7a-4361-bf20-50712c3f73d7" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan],
+       [nan, nan, nan, ..., nan, nan, nan]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>tree_depth</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">2 2 2 2 2 2 3 2 ... 3 2 2 1 2 2 2 3</div><input id="attrs-c25791e9-cc9e-4b4b-966f-5fd57dae2da3" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-c25791e9-cc9e-4b4b-966f-5fd57dae2da3" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-8441b267-a044-4412-94ea-371c44e1c634" class="xr-var-data-in" type="checkbox"><label for="data-8441b267-a044-4412-94ea-371c44e1c634" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[2, 2, 2, ..., 2, 2, 3],
+       [2, 3, 1, ..., 2, 3, 3],
+       [2, 3, 3, ..., 2, 2, 3],
+       [1, 2, 3, ..., 2, 2, 3]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>n_steps</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">3.0 3.0 3.0 3.0 ... 3.0 3.0 3.0 7.0</div><input id="attrs-e5e8bd95-1b6d-4427-b8a8-c68fe8bfd8f3" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-e5e8bd95-1b6d-4427-b8a8-c68fe8bfd8f3" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-8fc0d054-b4d1-406e-9cca-09ba393827e3" class="xr-var-data-in" type="checkbox"><label for="data-8fc0d054-b4d1-406e-9cca-09ba393827e3" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[3., 3., 3., ..., 3., 3., 7.],
+       [3., 7., 1., ..., 3., 7., 7.],
+       [3., 7., 7., ..., 3., 3., 7.],
+       [1., 3., 7., ..., 3., 3., 7.]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>perf_counter_diff</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.0001957 0.000198 ... 0.0003335</div><input id="attrs-d62d9cec-69ec-4db1-b3b8-f366e1defd3b" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-d62d9cec-69ec-4db1-b3b8-f366e1defd3b" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d8139981-5ca7-4ae9-9775-d5a5610a26ff" class="xr-var-data-in" type="checkbox"><label for="data-d8139981-5ca7-4ae9-9775-d5a5610a26ff" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[0.00019572, 0.00019799, 0.00018841, ..., 0.00017997, 0.00017787,
+        0.00032984],
+       [0.00019109, 0.00035057, 0.00012336, ..., 0.0001983 , 0.00043593,
+        0.00033786],
+       [0.00019956, 0.00035933, 0.0003723 , ..., 0.00017631, 0.00017898,
+        0.00034069],
+       [0.00010224, 0.00019691, 0.00035692, ..., 0.00017861, 0.00017772,
+        0.0003335 ]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>process_time_diff</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.0001957 0.0001981 ... 0.0003336</div><input id="attrs-92fbbd7e-8f47-464d-976d-c2a9c2726c49" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-92fbbd7e-8f47-464d-976d-c2a9c2726c49" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-819aa6be-cb07-491b-8310-a9bcefa6772d" class="xr-var-data-in" type="checkbox"><label for="data-819aa6be-cb07-491b-8310-a9bcefa6772d" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[0.00019567, 0.00019813, 0.00018853, ..., 0.00018003, 0.00017798,
+        0.00032994],
+       [0.00019112, 0.00035065, 0.00012334, ..., 0.00019844, 0.00043603,
+        0.00033802],
+       [0.00019968, 0.00035942, 0.0003725 , ..., 0.00017642, 0.0001791 ,
+        0.00034083],
+       [0.0001021 , 0.00019684, 0.00035714, ..., 0.00017866, 0.00017778,
+        0.00033364]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>energy_error</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-0.08676 -0.5571 ... 0.1704 -1.165</div><input id="attrs-cc272426-0cf7-4e1d-b475-9edba2a9655e" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-cc272426-0cf7-4e1d-b475-9edba2a9655e" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-892e0c3c-eded-4e02-b544-39cc1c079dd1" class="xr-var-data-in" type="checkbox"><label for="data-892e0c3c-eded-4e02-b544-39cc1c079dd1" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[-0.08676354, -0.55707971,  0.46624801, ...,  0.        ,
+         0.325291  , -0.21060465],
+       [ 0.        ,  0.10864021, -0.01464868, ..., -0.04108794,
+        -0.03409156, -0.21987311],
+       [-0.00613259,  0.04629629, -0.42920601, ...,  0.        ,
+        -0.04840926,  0.03876647],
+       [ 0.        ,  0.11630007,  0.70080163, ...,  0.1755585 ,
+         0.17036824, -1.16462335]], shape=(4, 1000))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>max_energy_error</span></div><div class="xr-var-dims">(chain, draw)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-0.1561 1.997 ... 0.1704 -1.435</div><input id="attrs-a37f4325-e297-4dec-816b-f622a22ee130" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-a37f4325-e297-4dec-816b-f622a22ee130" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-931bf1c0-8055-4dee-ae69-2c0e63607377" class="xr-var-data-in" type="checkbox"><label for="data-931bf1c0-8055-4dee-ae69-2c0e63607377" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([[-0.15613274,  1.99704598,  0.99571865, ...,  0.73611675,
+         0.325291  ,  0.85477271],
+       [ 4.67880379,  0.96693172, -0.01464868, ..., -0.04108794,
+        -0.16684677,  0.46602193],
+       [-0.00924969,  2.85872406, -0.55769345, ...,  6.74226374,
+         0.12153775, -0.13772793],
+       [ 4.61526805, -0.12556977,  6.95041544, ...,  0.1755585 ,
+         0.17036824, -1.43494468]], shape=(4, 1000))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-43ae0c32-4da5-4707-93bd-83d16c7f81d4" class="xr-section-summary-in" type="checkbox"><label for="section-43ae0c32-4da5-4707-93bd-83d16c7f81d4" class="xr-section-summary">Indexes: <span>(2)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>chain</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-7201a5d0-ce16-4e4c-a1c8-7b37dea73d28" class="xr-index-data-in" type="checkbox"><label for="index-7201a5d0-ce16-4e4c-a1c8-7b37dea73d28" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0, 1, 2, 3], dtype='int64', name='chain'))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>draw</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-cd183de6-8f9e-49cb-b1f3-cd7c08679936" class="xr-index-data-in" type="checkbox"><label for="index-cd183de6-8f9e-49cb-b1f3-cd7c08679936" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,
+       ...
+       990, 991, 992, 993, 994, 995, 996, 997, 998, 999],
+      dtype='int64', name='draw', length=1000))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-52bba44e-41af-48f9-849b-ae8e412ade49" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-52bba44e-41af-48f9-849b-ae8e412ade49" class="xr-section-summary">Attributes: <span>(8)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>created_at :</span></dt><dd>2026-02-19T12:17:54.873214+00:00</dd><dt><span>arviz_version :</span></dt><dd>0.23.4</dd><dt><span>inference_library :</span></dt><dd>pymc</dd><dt><span>inference_library_version :</span></dt><dd>5.25.1</dd><dt><span>sampling_time :</span></dt><dd>1.056750774383545</dd><dt><span>tuning_steps :</span></dt><dd>1000</dd><dt><span>modeling_interface :</span></dt><dd>bambi</dd><dt><span>modeling_interface_version :</span></dt><dd>0.15.0</dd></dl></div></li></ul></div></div><br></div>
+                      </ul>
+                  </div>
+            </li>
+            
+            <li class="xr-section-item">
+                  <input id="idata_observed_databf336f9f-a376-4dff-9ffd-245945e27371" class="xr-section-summary-in" type="checkbox">
+                  <label for="idata_observed_databf336f9f-a376-4dff-9ffd-245945e27371" class="xr-section-summary">observed_data</label>
+                  <div class="xr-section-inline-details"></div>
+                  <div class="xr-section-details">
+                      <ul id="xr-dataset-coord-list" class="xr-var-list">
+                          <div style="padding-left:2rem;"><div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 80B
+Dimensions:  (__obs__: 5)
+Coordinates:
+  * __obs__  (__obs__) int64 40B 0 1 2 3 4
+Data variables:
+    altura   (__obs__) float64 40B 178.0 163.0 175.0 155.0 189.0
+Attributes:
+    created_at:                  2026-02-19T12:17:54.877341+00:00
+    arviz_version:               0.23.4
+    inference_library:           pymc
+    inference_library_version:   5.25.1
+    modeling_interface:          bambi
+    modeling_interface_version:  0.15.0</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-ce269c63-415f-415a-85c5-365dc1cccb27" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-ce269c63-415f-415a-85c5-365dc1cccb27" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span class="xr-has-index">__obs__</span>: 5</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-741b1549-316b-489e-a4e5-364d1403d343" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-741b1549-316b-489e-a4e5-364d1403d343" class="xr-section-summary">Coordinates: <span>(1)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">__obs__</span></div><div class="xr-var-dims">(__obs__)</div><div class="xr-var-dtype">int64</div><div class="xr-var-preview xr-preview">0 1 2 3 4</div><input id="attrs-f10da088-cd2a-43fa-90e3-b3e5a025fb7d" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-f10da088-cd2a-43fa-90e3-b3e5a025fb7d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-ec110bc9-99bc-400c-8d6c-a49a50a473aa" class="xr-var-data-in" type="checkbox"><label for="data-ec110bc9-99bc-400c-8d6c-a49a50a473aa" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([0, 1, 2, 3, 4])</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-33e696da-459e-4d36-b5ff-d872cb976739" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-33e696da-459e-4d36-b5ff-d872cb976739" class="xr-section-summary">Data variables: <span>(1)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>altura</span></div><div class="xr-var-dims">(__obs__)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">178.0 163.0 175.0 155.0 189.0</div><input id="attrs-c17fcbb6-cac9-4243-ac59-486b3567c0d5" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-c17fcbb6-cac9-4243-ac59-486b3567c0d5" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-040c3384-b661-4b9a-b1e8-5def7ff9be4e" class="xr-var-data-in" type="checkbox"><label for="data-040c3384-b661-4b9a-b1e8-5def7ff9be4e" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([178., 163., 175., 155., 189.])</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-e8bd5233-618a-4640-b615-569d58139928" class="xr-section-summary-in" type="checkbox"><label for="section-e8bd5233-618a-4640-b615-569d58139928" class="xr-section-summary">Indexes: <span>(1)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>__obs__</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-6459220e-6f57-46d6-a51c-fb40aa2033b8" class="xr-index-data-in" type="checkbox"><label for="index-6459220e-6f57-46d6-a51c-fb40aa2033b8" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([0, 1, 2, 3, 4], dtype='int64', name='__obs__'))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-bd9e0576-5dee-4c22-9dfb-71559a77a87c" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-bd9e0576-5dee-4c22-9dfb-71559a77a87c" class="xr-section-summary">Attributes: <span>(6)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>created_at :</span></dt><dd>2026-02-19T12:17:54.877341+00:00</dd><dt><span>arviz_version :</span></dt><dd>0.23.4</dd><dt><span>inference_library :</span></dt><dd>pymc</dd><dt><span>inference_library_version :</span></dt><dd>5.25.1</dd><dt><span>modeling_interface :</span></dt><dd>bambi</dd><dt><span>modeling_interface_version :</span></dt><dd>0.15.0</dd></dl></div></li></ul></div></div><br></div>
+                      </ul>
+                  </div>
+            </li>
+            
+              </ul>
+            </div>
+            <style> /* CSS stylesheet for displaying InferenceData objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-sections.group-sections {
+  grid-template-columns: auto;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2 {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+.xr-wrap{width:700px!important;} </style>
+</div>
+</div>
+</section>
+<section id="verificação-das-priors" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="verificação-das-priors"><span class="header-section-number">5</span> Verificação das priors</h2>
+<p>Neste exemplo as priors foram atribuídas automaticamente. Veremos como especificá-las manualmente mais adiante. Por enquanto, iremos nos concentrar em visualizar as distribuições a priori para entender as expectativas iniciais do modelo sobre os parâmetros <strong>antes de processar os dados</strong>.</p>
+<div id="4de0e1ac" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mod.plot_priors(var_names<span class="op">=</span>[<span class="st">'Intercept'</span>, <span class="st">'calcado'</span>, <span class="st">'sigma'</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>array([&lt;Axes: title={'center': 'Intercept'}&gt;,
+       &lt;Axes: title={'center': 'calcado'}&gt;,
+       &lt;Axes: title={'center': 'sigma'}&gt;], dtype=object)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-7-output-2.png" width="718" height="367" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="diagnósticos-de-convergência" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="diagnósticos-de-convergência"><span class="header-section-number">6</span> Diagnósticos de convergência</h2>
+<p>Após realizar a amostragem MCMC, é fundamental verificar se o processo de amostragem funcionou corretamente. Para isso, utilizamos <strong>diagnósticos de convergência</strong>, que nos ajudam a avaliar se as cadeias geradas estão representando adequadamente a distribuição a posteriori dos parâmetros.</p>
+<p>Uma das ferramentas mais comuns para essa avaliação são os <strong>trace plots</strong> — gráficos que mostram os valores amostrados para cada parâmetro ao longo das iterações. Idealmente, essas cadeias devem parecer bem <strong>misturadas</strong> e sem padrões visíveis, o que indica que a amostragem atingiu o chamado <strong>estado estacionário</strong>, sugerindo que as estimativas são confiáveis.</p>
+<p>Tendências, oscilações sistemáticas ou falta de sobreposição entre diferentes cadeias pode ser um sinal de que o algoritmo não convergiu adequadamente, exigindo ajustes no modelo ou no processo de amostragem.</p>
+<div id="caaa4a77" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráficos de diagnóstico</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Trace plots</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>az.plot_trace(mod_fit, var_names<span class="op">=</span>[<span class="st">'Intercept'</span>, <span class="st">'calcado'</span>, <span class="st">'sigma'</span>], axes<span class="op">=</span>axes)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">'Trace Plots - Convergência das Cadeias MCMC'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-8-output-1.png" width="756" height="757" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="resumo-do-ajuste" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="resumo-do-ajuste"><span class="header-section-number">7</span> Resumo do ajuste</h2>
+<div id="7317c75b" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>az.summary(mod_fit)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">sd</th>
+<th data-quarto-table-cell-role="th">hdi_3%</th>
+<th data-quarto-table-cell-role="th">hdi_97%</th>
+<th data-quarto-table-cell-role="th">mcse_mean</th>
+<th data-quarto-table-cell-role="th">mcse_sd</th>
+<th data-quarto-table-cell-role="th">ess_bulk</th>
+<th data-quarto-table-cell-role="th">ess_tail</th>
+<th data-quarto-table-cell-role="th">r_hat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">sigma</td>
+<td>8.946</td>
+<td>4.194</td>
+<td>3.423</td>
+<td>16.528</td>
+<td>0.134</td>
+<td>0.156</td>
+<td>1013.0</td>
+<td>1041.0</td>
+<td>1.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Intercept</td>
+<td>66.679</td>
+<td>44.019</td>
+<td>-24.246</td>
+<td>146.581</td>
+<td>0.959</td>
+<td>1.430</td>
+<td>2226.0</td>
+<td>1800.0</td>
+<td>1.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">calcado</td>
+<td>2.596</td>
+<td>1.069</td>
+<td>0.504</td>
+<td>4.635</td>
+<td>0.023</td>
+<td>0.034</td>
+<td>2291.0</td>
+<td>1781.0</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Após a amostragem MCMC e a verificação da convergência, exploramos um <strong>resumo estatístico</strong> das distribuições a posteriori dos parâmetros do modelo. Na tabela acima, cada linha corresponde a um parâmetro (<code>sigma</code>, <code>Intercept</code>, <code>calcado</code>). As colunas fornecem estimativas pontuais (<code>MEAN</code>), intervalos de incerteza (<code>SD</code>, <code>HDI</code>) e métricas para verificar a qualidade e a confiabilidade das amostras MCMC (<code>MCSE</code>, <code>ESS</code>, <code>R_HAT</code>).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Tabela resumo em um modelo bayesiano">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tabela resumo em um modelo bayesiano
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong><code>MEAN</code></strong>: A <strong>média</strong> das amostras a posteriori para o parâmetro.</li>
+<li><strong><code>SD</code></strong>: O <strong>desvio padrão</strong> das amostras a posteriori.</li>
+<li><strong><code>HDI_3%</code> e <code>HDI_97%</code></strong>: Os limites inferior (3%) e superior (97%) do <strong>Intervalo de Credibilidade de Maior Densidade (HDI)</strong>.</li>
+<li><strong><code>MCSE_MEAN</code> (Monte Carlo Standard Error of the Mean)</strong>: O Erro Padrão de Monte Carlo da Média estima a variabilidade <em>da estimativa da média</em> a posteriori devido ao número finito e à correlação entre as amostras MCMC.</li>
+<li><strong><code>MCSE_SD</code> (Monte Carlo Standard Error of the Standard Deviation)</strong>: O Erro Padrão de Monte Carlo do Desvio Padrão. Similar ao MCSE_MEAN, mas estima a precisão com que o <em>desvio padrão</em> a posteriori foi estimado a partir das amostras.</li>
+<li><strong><code>ESS_BULK</code> (Effective Sample Size - Bulk)</strong>: O Tamanho Efetivo da Amostra. Devido à autocorrelação nas cadeias MCMC, o número de amostras <em>efetivamente independentes</em> é geralmente menor que o número total de amostras coletadas.</li>
+<li><strong><code>ESS_TAIL</code> (Effective Sample Size - Tail)</strong>: O Tamanho Efetivo da Amostra para as características das caudas da distribuição (como quantis extremos).</li>
+<li><strong><code>R_HAT</code> (Gelman-Rubin statistic)</strong>: O R-hat é um diagnóstico de <strong>convergência</strong> que compara a variabilidade <em>dentro</em> de cada cadeia MCMC com a variabilidade <em>entre</em> as diferentes cadeias. Se todas as cadeias convergiram para a mesma distribuição estacionária (a posteriori alvo), o valor de R_HAT deve ser muito próximo de 1 (idealmente &lt;= 1.01 ou &lt;= 1.05 no máximo). Valores significativamente maiores que 1 indicam que as cadeias não convergiram bem.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="verificação-das-posteriores-e-comparação-com-as-priors" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="verificação-das-posteriores-e-comparação-com-as-priors"><span class="header-section-number">8</span> Verificação das posteriores e comparação com as priors</h2>
+<p>A <strong>comparação gráfica entre as distribuições a priori e a posteriori</strong> dos parâmetros nos ajuda a avaliar o quanto os dados foram informativos, mostrando quais parâmetros foram mais ou menos atualizados em relação às nossas crenças iniciais. Uma pequena mudança da prior para a posteriori indica que os dados trouxeram pouca informação nova sobre aquele parâmetro, enquanto uma grande diferença sugere que os dados foram bastante informativos. No gráfico abaixo, visualizamos essa comparação para os parâmetros do modelo (<code>Intercept</code>, <code>calcado</code> e <code>sigma</code>), onde a linha superior exibe as <strong>distribuições a priori</strong> (atribuídas automaticamente) e a linha inferior apresenta as <strong>distribuições a posteriori</strong> resultantes da análise bayesiana.</p>
+<div id="85f6e197" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>param_order <span class="op">=</span> [<span class="st">'Intercept'</span>, <span class="st">'calcado'</span>, <span class="st">'sigma'</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">2</span>, ncols<span class="op">=</span><span class="bu">len</span>(param_order), figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>mod.plot_priors(var_names<span class="op">=</span>param_order, ax<span class="op">=</span>axes[<span class="dv">0</span>, :])</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>az.plot_posterior(mod_fit, var_names<span class="op">=</span>param_order, ax<span class="op">=</span>axes[<span class="dv">1</span>, :])</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>, <span class="dv">0</span>].set_ylabel(<span class="st">'Densidade das Prioris'</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].set_ylabel(<span class="st">'Densidade das Posteriores'</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>Text(0, 0.5, 'Densidade das Posteriores')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-10-output-2.png" width="716" height="514" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="019beca1" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>az.plot_trace(mod_fit, figsize<span class="op">=</span>(<span class="dv">9</span>,<span class="dv">10</span>))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>array([[&lt;Axes: title={'center': 'sigma'}&gt;,
+        &lt;Axes: title={'center': 'sigma'}&gt;],
+       [&lt;Axes: title={'center': 'Intercept'}&gt;,
+        &lt;Axes: title={'center': 'Intercept'}&gt;],
+       [&lt;Axes: title={'center': 'calcado'}&gt;,
+        &lt;Axes: title={'center': 'calcado'}&gt;]], dtype=object)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-11-output-2.png" width="689" height="800" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="predição-bayesiana" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="predição-bayesiana"><span class="header-section-number">9</span> Predição Bayesiana</h2>
+<p>O processo de <strong>predição</strong> nos permite estimar valores da variável resposta para <strong>novas observações não incluídas</strong> no conjunto de dados original. Na abordagem bayesiana, a predição vai além de fornecer uma estimativa pontual (isto é, da média), incorporando explicitamente a <strong>incerteza</strong> associada tanto aos parâmetros do modelo quanto à variabilidade intrínseca do <strong>processo gerador dos dados</strong>.</p>
+<p>A <strong>predição bayesiana</strong> utiliza toda a distribuição a posteriori dos parâmetros para gerar a <strong>distribuição preditiva a posteriori</strong>. Esta distribuição captura duas fontes principais de incerteza:</p>
+<ol type="1">
+<li><strong>Incerteza epistêmica</strong>: Relacionada ao nosso conhecimento limitado sobre os verdadeiros valores dos parâmetros do modelo (representada pela distribuição a posteriori dos parâmetros).</li>
+<li><strong>Incerteza aleatória</strong>: Relacionada à variabilidade natural do processo (representada pelo componente estocástico do modelo, como o termo de erro <span class="math inline">\(\sigma\)</span>).</li>
+</ol>
+<p>A combinação dessas duas fontes de incerteza resulta em <strong>intervalos de predição</strong> mais amplos que os <strong>intervalos de credibilidade da reta média</strong>, refletindo de forma mais realista nossa incerteza sobre observações futuras.</p>
+<section id="predição-sobre-a-reta-média-incerteza-epistêmica" class="level3" data-number="9.1">
+<h3 data-number="9.1" class="anchored" data-anchor-id="predição-sobre-a-reta-média-incerteza-epistêmica"><span class="header-section-number">9.1</span> Predição sobre a reta média (Incerteza epistêmica)</h3>
+<p>A <strong>predição da reta média</strong> quantifica nossa incerteza sobre o valor <strong>esperado</strong> da variável resposta, considerando apenas a incerteza nos parâmetros do modelo. As amostras da posteriori geradas pelo método MCMC nos fornecem várias <em>combinações de parâmetros possíveis</em> ajustadas ao conjunto de dados. Podemos entender estas como <em>retas possíveis</em> para o conjunto observado - algumas combinações dos parâmetros fornecem retas mais prováveis, outras menos.</p>
+<section id="visualização-das-retas-possíveis" class="level4" data-number="9.1.1">
+<h4 data-number="9.1.1" class="anchored" data-anchor-id="visualização-das-retas-possíveis"><span class="header-section-number">9.1.1</span> Visualização das retas possíveis</h4>
+<p>Para visualizar essa incerteza epistêmica, vamos primeiro obter amostras da distribuição posterior e construir algumas retas possíveis:</p>
+<div id="2eddf6b9" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir pontos extremos para construção das retas</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> [<span class="dv">32</span>, <span class="dv">48</span>]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>novo_x <span class="op">=</span> pd.DataFrame({<span class="st">"calcado"</span>: x_vals})</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>posterior_par <span class="op">=</span> mod.predict(mod_fit, kind<span class="op">=</span><span class="st">"response_params"</span>, data<span class="op">=</span>novo_x, inplace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>mu_vals <span class="op">=</span> posterior_par.posterior[<span class="st">'mu'</span>].values</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>mu_flat <span class="op">=</span> mu_vals.reshape(<span class="op">-</span><span class="dv">1</span>, mu_vals.shape[<span class="op">-</span><span class="dv">1</span>])</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="ac32da0e" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular a reta média</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>y_mean <span class="op">=</span> (posterior_par.posterior[<span class="st">'Intercept'</span>].mean().values <span class="op">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>          posterior_par.posterior[<span class="st">'calcado'</span>].mean().values <span class="op">*</span> x_vals)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="d118b7a3" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotar uma amostra de retas possíveis</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> np.random.choice(mu_flat.shape[<span class="dv">0</span>], size<span class="op">=</span>n, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> indices:</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    plt.plot(x_vals, mu_flat[i, :], <span class="st">'#e37d76'</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>plt.plot(x_vals, y_mean, <span class="st">'#162be0'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">'Reta média'</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Adicionar os pontos observados e reta média</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'calcado'</span>, y<span class="op">=</span><span class="st">'altura'</span>, color<span class="op">=</span><span class="st">'green'</span>, label<span class="op">=</span><span class="st">'Observações'</span>, s <span class="op">=</span> <span class="dv">100</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Calçado"</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Altura prevista"</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Amostra de </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> retas da posteriori"</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">120</span>, <span class="dv">210</span>)</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">32</span>, <span class="dv">48</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-14-output-1.png" width="750" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="intervalo-de-credibilidade-ic-para-mu" class="level4" data-number="9.1.2">
+<h4 data-number="9.1.2" class="anchored" data-anchor-id="intervalo-de-credibilidade-ic-para-mu"><span class="header-section-number">9.1.2</span> Intervalo de Credibilidade (IC) para <span class="math inline">\(\mu\)</span></h4>
+<p>Ao invés de representar todas as retas possíveis, podemos criar um envelope contendo as combinações que determinam os <strong>intervalos de credibilidade para a reta média</strong>, representando nossa incerteza sobre o valor esperado da resposta:</p>
+<div id="9ed12454" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar sequência contínua para visualização</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>x_seq <span class="op">=</span> np.linspace(<span class="dv">32</span>, <span class="dv">48</span>, <span class="dv">100</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extrair amostras dos parâmetros</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> posterior_par.posterior[<span class="st">'Intercept'</span>].values.flatten()</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> posterior_par.posterior[<span class="st">'calcado'</span>].values.flatten()</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular retas para toda a sequência</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>y_seq <span class="op">=</span> intercept[:, <span class="va">None</span>] <span class="op">+</span> slope[:, <span class="va">None</span>] <span class="op">*</span> x_seq[<span class="va">None</span>, :]</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular intervalo de credibilidade de 95%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>y_ci <span class="op">=</span> np.percentile(y_seq, [<span class="fl">2.5</span>, <span class="fl">97.5</span>], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Reta média para toda a sequência</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>intercept_mean <span class="op">=</span> posterior_par.posterior[<span class="st">'Intercept'</span>].mean().values</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>slope_mean <span class="op">=</span> posterior_par.posterior[<span class="st">'calcado'</span>].mean().values</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>y_mean_seq <span class="op">=</span> intercept_mean <span class="op">+</span> slope_mean <span class="op">*</span> x_seq</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="9fbd7994" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotar resultados</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervalo de credibilidade (envelope)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>plt.fill_between(x_seq, y_ci[<span class="dv">0</span>], y_ci[<span class="dv">1</span>], color<span class="op">=</span><span class="st">'#e37d76'</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                 label<span class="op">=</span><span class="st">'IC 95</span><span class="sc">% d</span><span class="st">a reta média'</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Pontos observados</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'calcado'</span>, y<span class="op">=</span><span class="st">'altura'</span>, color<span class="op">=</span><span class="st">'green'</span>, label<span class="op">=</span><span class="st">'Observações'</span>, s <span class="op">=</span> <span class="dv">100</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>plt.plot(x_seq, y_mean_seq, <span class="st">'#162be0'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">'Reta média'</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Calçado"</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Resposta média predita ($\mu$)"</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Reta média e intervalo de credibilidade (95%)"</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-16-output-1.png" width="745" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>O <strong>Intervalo de Credibilidade</strong> representa nossa incerteza sobre o valor médio esperado da altura para indivíduos com um determinado número de calçado, refletindo exclusivamente a incerteza epistêmica associada aos parâmetros do modelo. Note que a maioria das retas passa próxima ao centro da distribuição de <span class="math inline">\(x\)</span> e <span class="math inline">\(y\)</span>, pois, nas proximidades da média de <span class="math inline">\(x\)</span>, há maior confiança na estimativa da trajetória da reta. À medida que nos afastamos desse centro, a incerteza aumenta, resultando em maior variabilidade nas regiões mais afastadas de <span class="math inline">\(x\)</span>.</p>
+</section>
+</section>
+<section id="predição-sobre-novos-pontos-incerteza-epistêmica-aleatória" class="level3" data-number="9.2">
+<h3 data-number="9.2" class="anchored" data-anchor-id="predição-sobre-novos-pontos-incerteza-epistêmica-aleatória"><span class="header-section-number">9.2</span> Predição sobre novos pontos (Incerteza epistêmica + aleatória)</h3>
+<p>A <strong>predição de novas observações</strong> vai além da estimativa da média, incorporando também a variabilidade intrínseca do processo. Enquanto o intervalo de credibilidade nos representa nossa incerteza quanto à reta média, o <strong>Intervalo de Predição (IP)</strong> nos informa sobre a incerteza associada ao valor que uma nova observação específica pode assumir.</p>
+<section id="implementação-da-predição-para-novas-observações" class="level4" data-number="9.2.1">
+<h4 data-number="9.2.1" class="anchored" data-anchor-id="implementação-da-predição-para-novas-observações"><span class="header-section-number">9.2.1</span> Implementação da predição para novas observações</h4>
+<div id="466b782a" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir valores para predição</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>calcado_pred <span class="op">=</span> np.array([<span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">45</span>])</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>dados_pred <span class="op">=</span> pd.DataFrame({<span class="st">"calcado"</span>: calcado_pred})</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Predição da resposta média (μ - apenas incerteza epistêmica)</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>pred_mu <span class="op">=</span> mod.predict(mod_fit, kind<span class="op">=</span><span class="st">"response_params"</span>, data<span class="op">=</span>dados_pred, inplace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Predição de novas observações (μ + σ - ambas as incertezas)</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>pred_obs <span class="op">=</span> mod.predict(mod_fit, kind<span class="op">=</span><span class="st">"response"</span>, data<span class="op">=</span>dados_pred, inplace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valores preditos para número do calçado:"</span>, calcado_pred)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Resumo das predições:"</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Calçado 35: μ = </span><span class="sc">{</span>pred_mu<span class="sc">.</span>posterior[<span class="st">'mu'</span>]<span class="sc">.</span>values[:,:,<span class="dv">0</span>]<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss"> cm"</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Calçado 40: μ = </span><span class="sc">{</span>pred_mu<span class="sc">.</span>posterior[<span class="st">'mu'</span>]<span class="sc">.</span>values[:,:,<span class="dv">1</span>]<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss"> cm"</span>) </span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Calçado 45: μ = </span><span class="sc">{</span>pred_mu<span class="sc">.</span>posterior[<span class="st">'mu'</span>]<span class="sc">.</span>values[:,:,<span class="dv">2</span>]<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss"> cm"</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Valores preditos para número do calçado: [35 40 45]
+
+Resumo das predições:
+Calçado 35: μ = 157.6 cm
+Calçado 40: μ = 170.5 cm
+Calçado 45: μ = 183.5 cm</code></pre>
+</div>
+</div>
+<div id="828196b3" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização das predições pontuais</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extrair amostras aleatórias de novas observações para cada valor de calçado</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>n_samples <span class="op">=</span> <span class="dv">80</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>calcado_pred <span class="op">=</span> [<span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">45</span>]</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>cores <span class="op">=</span> [<span class="st">'#ff6b6b'</span>, <span class="st">'#4ecdc4'</span>, <span class="st">'#d1c845'</span>]</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Reta média</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>plt.plot(x_seq, y_mean_seq, <span class="st">'#162be0'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">'Reta média (μ)'</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotar dados originais</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">'calcado'</span>, y<span class="op">=</span><span class="st">'altura'</span>, color<span class="op">=</span><span class="st">'green'</span>, s<span class="op">=</span><span class="dv">100</span>, </span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span><span class="st">'Dados observados'</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotar uma amostra das predições para novos pontos</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (calcado_val, cor) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(calcado_pred, cores)):</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    x_sample <span class="op">=</span> [calcado_val] <span class="op">*</span> n_samples</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    y_sample <span class="op">=</span> random.sample(<span class="bu">list</span>(pred_mu.posterior[<span class="st">'mu'</span>].values[:,:,i].flatten()), n_samples)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    plt.scatter(x_sample, y_sample, color<span class="op">=</span>cor, alpha<span class="op">=</span><span class="fl">0.4</span>, s<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="ss">f'Predições calçado n. </span><span class="sc">{</span>calcado_val<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Número do calçado"</span>)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Altura (cm)"</span>)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Reta média e amostra de </span><span class="sc">{</span>n_samples<span class="sc">}</span><span class="ss"> predições para cada valor de calçado"</span>)</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">'lower right'</span>)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-18-output-1.png" width="758" height="471" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Histograma das novas predições</p>
+<div id="de9de37e" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (calcado_val, cor) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(calcado_pred, cores)):</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    y_sample <span class="op">=</span> random.sample(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">list</span>(pred_mu.posterior[<span class="st">'mu'</span>].values[:, :, i].flatten()), n_samples</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    sns.kdeplot(y_sample, color<span class="op">=</span>cor, fill<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>                label<span class="op">=</span><span class="ss">f'Calçado n. </span><span class="sc">{</span>calcado_val<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Altura prevista"</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Densidade"</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribuições de altura</span><span class="ch">\n</span><span class="st">das novas predições por número de calçado"</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regressao-linear-bayesiana-bambi_files/figure-html/cell-19-output-1.png" width="758" height="472" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Observe que as médias das predições para novas observações coincidem com a reta média estimada (<span class="math inline">\(\mu\)</span>), mas a variabilidade em torno dessas médias é maior. Isso ocorre porque essas predições incorporam tanto a incerteza epistêmica, proveniente da estimação dos parâmetros do modelo, e a incerteza aleatória, associada à variabilidade intrínseca do processo (<span class="math inline">\(\sigma\)</span>).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Interpretação dos tipos de predição bayesiana">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpretação dos tipos de predição bayesiana
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A abordagem bayesiana fornece uma caracterização completa e <em>hierárquica</em> da incerteza preditiva: primeiro quantificando nossa incerteza sobre a relação média entre as variáveis, e depois expandindo essa análise para incluir a variabilidade natural do fenômeno. Essa distinção é fundamental para decisões informadas, pois diferentes tipos de decisão podem requerer diferentes tipos de intervalo preditivo.</p>
+<p><strong>Intervalo de Credibilidade (IC) para μ</strong>: Representa nossa incerteza sobre o valor médio esperado da altura para indivíduos com um determinado número de calçado. Este intervalo reflete apenas a <strong>incerteza epistêmica</strong> sobre os parâmetros do modelo. É mais estreito porque representa nossa incerteza sobre a <em>linha média</em> da relação.</p>
+<p><strong>Intervalo de Predição (IP) para novas observações</strong>: Representa nossa incerteza sobre a altura de um novo indivíduo específico com um determinado número de calçado. Este intervalo é sempre mais amplo pois incorpora tanto a <strong>incerteza epistêmica</strong> (sobre os parâmetros) quanto a <strong>incerteza aleatória</strong> (variabilidade natural representada por <span class="math inline">\(\sigma\)</span>).</p>
+<p>A <strong>razão entre as larguras</strong> dos intervalos indica o quanto a variabilidade intrínseca do processo contribui para a incerteza total. Valores maiores sugerem que a variabilidade natural dos dados (<span class="math inline">\(\sigma\)</span>) é a principal fonte de incerteza nas predições, enquanto valores próximos de 1 indicariam que a incerteza sobre os parâmetros é dominante. Essa razão também permite avaliar aspectos do delineamento experimental, pois a incerteza epistêmica diminui à medida que obtemos mais dados, aumentando nossa confiança na posição da reta média. Por outro lado, a incerteza aleatória é inerente ao processo gerador dos dados e <strong>não</strong> é afetada pelo tamanho da amostra, representando um limite irreducível da precisão nas predições.</p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="estrutura-de-código-bambi-vs-pymc" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="estrutura-de-código-bambi-vs-pymc"><span class="header-section-number">10</span> Estrutura de código: Bambi vs PyMC</h2>
+<p>Neste bloco, utilizamos a biblioteca Bambi como alternativa ao PyMC. Segue portanto uma comparação entre as duas abordagens para a implementação de uma regressão linear bayesiana.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Quando usar cada abordagem">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quando usar cada abordagem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Bambi: estrutura de código</strong></p>
+<div id="dd0ec1fe" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bambi</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> bmb.Model(<span class="st">"altura ~ calcado"</span>, df, priors<span class="op">=</span>priors)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> modelo.fit()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Quando usar:</strong></p>
+<ul>
+<li>Deseja implementar modelos estatísticos padrão (regressão linear, GLMs, modelos hierárquicos)</li>
+<li>Necessita de rapidez de desenvolvimento e ajustes</li>
+</ul>
+<p><strong>PyMC: estrutura de código</strong></p>
+<div id="c2a0fbf8" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PyMC - requer definição manual de todas as componentes</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> modelo:</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Priors</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    beta_0 <span class="op">=</span> pm.Normal(<span class="st">"beta_0"</span>, mu<span class="op">=</span><span class="dv">60</span>, sigma<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    beta_1 <span class="op">=</span> pm.Normal(<span class="st">"beta_1"</span>, mu<span class="op">=</span><span class="fl">2.8</span>, sigma<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    sigma <span class="op">=</span> pm.HalfNormal(<span class="st">"sigma"</span>, sigma<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verossimilhança</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    mu <span class="op">=</span> beta_0 <span class="op">+</span> beta_1 <span class="op">*</span> X</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    altura <span class="op">=</span> pm.Normal(<span class="st">"altura"</span>, mu<span class="op">=</span>mu, sigma<span class="op">=</span>sigma, observed<span class="op">=</span>Y)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    trace <span class="op">=</span> pm.sample()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Quando usar:</strong></p>
+<ul>
+<li>Necessitar controle total sobre a especificação do modelo</li>
+<li>Necessita implementar modelos customizados ou muito complexos</li>
+<li>Necessita de funcionalidades específicas não disponíveis no Bambi</li>
+</ul>
+</div>
+</div>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script type="application/vnd.jupyter.widget-state+json">
+{"state":{"6703382fa3d24c1e88b6f4c3ad5cd98d":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"c1d949d2d9a34e7691f32e968d351c2e":{"model_module":"@jupyter-widgets/output","model_module_version":"1.0.0","model_name":"OutputModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/output","_model_module_version":"1.0.0","_model_name":"OutputModel","_view_count":null,"_view_module":"@jupyter-widgets/output","_view_module_version":"1.0.0","_view_name":"OutputView","layout":"IPY_MODEL_6703382fa3d24c1e88b6f4c3ad5cd98d","msg_id":"","outputs":[{"data":{"text/html":"<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\">                                                                                                                   \n <span style=\"font-weight: bold\"> Progress                 </span> <span style=\"font-weight: bold\"> Draws </span> <span style=\"font-weight: bold\"> Divergences </span> <span style=\"font-weight: bold\"> Step size </span> <span style=\"font-weight: bold\"> Grad evals </span> <span style=\"font-weight: bold\"> Sampling Speed  </span> <span style=\"font-weight: bold\"> Elapsed </span> <span style=\"font-weight: bold\"> Remaining </span> \n ───────────────────────────────────────────────────────────────────────────────────────────────────────────────── \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">━━━━━━━━━━━━━━━━━━━━━━━━</span>   2000    0             0.61        7            2324.68 draws/s   0:00:00   0:00:00    \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">━━━━━━━━━━━━━━━━━━━━━━━━</span>   2000    0             0.60        7            2376.54 draws/s   0:00:00   0:00:00    \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">━━━━━━━━━━━━━━━━━━━━━━━━</span>   2000    0             0.83        7            2252.99 draws/s   0:00:00   0:00:00    \n  <span style=\"color: #1f77b4; text-decoration-color: #1f77b4\">━━━━━━━━━━━━━━━━━━━━━━━━</span>   2000    0             0.40        7            2184.49 draws/s   0:00:00   0:00:00    \n                                                                                                                   \n</pre>\n","text/plain":"                                                                                                                   \n \u001b[1m \u001b[0m\u001b[1mProgress                \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mDraws\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mDivergences\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mStep size\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mGrad evals\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mSampling Speed \u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mElapsed\u001b[0m\u001b[1m \u001b[0m \u001b[1m \u001b[0m\u001b[1mRemaining\u001b[0m\u001b[1m \u001b[0m \n ───────────────────────────────────────────────────────────────────────────────────────────────────────────────── \n  \u001b[38;2;31;119;180m━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m   2000    0             0.61        7            2324.68 draws/s   0:00:00   0:00:00    \n  \u001b[38;2;31;119;180m━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m   2000    0             0.60        7            2376.54 draws/s   0:00:00   0:00:00    \n  \u001b[38;2;31;119;180m━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m   2000    0             0.83        7            2252.99 draws/s   0:00:00   0:00:00    \n  \u001b[38;2;31;119;180m━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m   2000    0             0.40        7            2184.49 draws/s   0:00:00   0:00:00    \n                                                                                                                   \n"},"metadata":{},"output_type":"display_data"}],"tabbable":null,"tooltip":null}}},"version_major":2,"version_minor":0}
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiada");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiada");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/github\.com\/FCopf\/MEAD");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
