@@ -9,6 +9,7 @@ listing:
     - ../content/regressao-linear/mmq-regressao-linear-simples.qmd
     - ../content/regressao-linear/mmq-regressao-polinomial.qmd
     - ../content/regressao-linear/regressao-linear-simples.qmd
+    - ../content/regressao-linear/particao-soma-quadrados-r2.qmd
     - ../content/regressao-linear/regressao-linear-multipla.qmd
   sort: false
   type: default
