@@ -8,7 +8,7 @@ categories: [
           "Coeficiente de determinação"
         ]
 
-image: "images/regressao-linear-simples.jpg"
+image: "images/ss-partition-r2.jpg"
 execute:
   echo: true
   warning: false
