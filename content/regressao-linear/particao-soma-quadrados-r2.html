@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Decomposição algébrica e geométrica da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação R².">
+<meta name="description" content="Decomposição da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação R^2.">
 
 <title>Partição da soma dos quadrados e coeficiente de determinação na regressão linear – Modelagem Estatística e Análise de Dados</title>
 <style>
@@ -157,7 +157,7 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../../styles/custom.css">
 <meta property="og:title" content="Partição da soma dos quadrados e coeficiente de determinação na regressão linear – Modelagem Estatística e Análise de Dados">
-<meta property="og:description" content="Decomposição algébrica e geométrica da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação R².">
+<meta property="og:description" content="Decomposição da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação \(R^2\).">
 <meta property="og:image" content="https://github.com/FCopf/MEAD/content/regressao-linear/images/ss-partition-r2.jpg">
 <meta property="og:site_name" content="Modelagem Estatística e Análise de Dados">
 </head>
@@ -204,33 +204,27 @@ window.Quarto = {
     <h2 id="toc-title">Nesta página</h2>
    
   <ul>
-  <li><a href="#as-três-componentes-da-variação" id="toc-as-três-componentes-da-variação" class="nav-link active" data-scroll-target="#as-três-componentes-da-variação"><span class="header-section-number">1</span> As três componentes da variação</a></li>
-  <li><a href="#derivação-algébrica-da-partição" id="toc-derivação-algébrica-da-partição" class="nav-link" data-scroll-target="#derivação-algébrica-da-partição"><span class="header-section-number">2</span> Derivação algébrica da partição</a>
+  <li><a href="#os-três-componentes-da-variação" id="toc-os-três-componentes-da-variação" class="nav-link active" data-scroll-target="#os-três-componentes-da-variação"><span class="header-section-number">1</span> Os três componentes da variação</a></li>
+  <li><a href="#o-coeficiente-de-determinação-r2" id="toc-o-coeficiente-de-determinação-r2" class="nav-link" data-scroll-target="#o-coeficiente-de-determinação-r2"><span class="header-section-number">2</span> O coeficiente de determinação <span class="math inline">\(R^2\)</span></a>
   <ul class="collapse">
-  <li><a href="#a-identidade-fundamental" id="toc-a-identidade-fundamental" class="nav-link" data-scroll-target="#a-identidade-fundamental"><span class="header-section-number">2.1</span> A identidade fundamental</a></li>
-  <li><a href="#anulação-do-produto-cruzado" id="toc-anulação-do-produto-cruzado" class="nav-link" data-scroll-target="#anulação-do-produto-cruzado"><span class="header-section-number">2.2</span> Anulação do produto cruzado</a></li>
-  <li><a href="#o-argumento-de-ortogonalidade" id="toc-o-argumento-de-ortogonalidade" class="nav-link" data-scroll-target="#o-argumento-de-ortogonalidade"><span class="header-section-number">2.3</span> O argumento de ortogonalidade</a></li>
+  <li><a href="#definição-e-interpretação" id="toc-definição-e-interpretação" class="nav-link" data-scroll-target="#definição-e-interpretação"><span class="header-section-number">2.1</span> Definição e interpretação</a></li>
+  <li><a href="#formulações-alternativas" id="toc-formulações-alternativas" class="nav-link" data-scroll-target="#formulações-alternativas"><span class="header-section-number">2.2</span> Formulações alternativas</a></li>
+  <li><a href="#relação-com-o-coeficiente-de-correlação" id="toc-relação-com-o-coeficiente-de-correlação" class="nav-link" data-scroll-target="#relação-com-o-coeficiente-de-correlação"><span class="header-section-number">2.3</span> Relação com o coeficiente de correlação</a></li>
+  <li><a href="#limitações-do-r2" id="toc-limitações-do-r2" class="nav-link" data-scroll-target="#limitações-do-r2"><span class="header-section-number">2.4</span> Limitações do <span class="math inline">\(R^2\)</span></a></li>
   </ul></li>
-  <li><a href="#o-coeficiente-de-determinação-r2" id="toc-o-coeficiente-de-determinação-r2" class="nav-link" data-scroll-target="#o-coeficiente-de-determinação-r2"><span class="header-section-number">3</span> O coeficiente de determinação <span class="math inline">\(R^2\)</span></a>
+  <li><a href="#situações-extremas" id="toc-situações-extremas" class="nav-link" data-scroll-target="#situações-extremas"><span class="header-section-number">3</span> Situações extremas</a>
   <ul class="collapse">
-  <li><a href="#definição-e-interpretação" id="toc-definição-e-interpretação" class="nav-link" data-scroll-target="#definição-e-interpretação"><span class="header-section-number">3.1</span> Definição e interpretação</a></li>
-  <li><a href="#formulações-alternativas" id="toc-formulações-alternativas" class="nav-link" data-scroll-target="#formulações-alternativas"><span class="header-section-number">3.2</span> Formulações alternativas</a></li>
-  <li><a href="#relação-com-o-coeficiente-de-correlação" id="toc-relação-com-o-coeficiente-de-correlação" class="nav-link" data-scroll-target="#relação-com-o-coeficiente-de-correlação"><span class="header-section-number">3.3</span> Relação com o coeficiente de correlação</a></li>
-  <li><a href="#limitações-do-r2" id="toc-limitações-do-r2" class="nav-link" data-scroll-target="#limitações-do-r2"><span class="header-section-number">3.4</span> Limitações do <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#cenário-com-r2-elevado" id="toc-cenário-com-r2-elevado" class="nav-link" data-scroll-target="#cenário-com-r2-elevado"><span class="header-section-number">3.1</span> Cenário com <span class="math inline">\(R^2\)</span> elevado</a></li>
+  <li><a href="#cenário-com-r2-baixo" id="toc-cenário-com-r2-baixo" class="nav-link" data-scroll-target="#cenário-com-r2-baixo"><span class="header-section-number">3.2</span> Cenário com <span class="math inline">\(R^2\)</span> baixo</a></li>
+  <li><a href="#visualização-dos-dois-cenários" id="toc-visualização-dos-dois-cenários" class="nav-link" data-scroll-target="#visualização-dos-dois-cenários"><span class="header-section-number">3.3</span> Visualização dos dois cenários</a></li>
   </ul></li>
-  <li><a href="#situações-extremas" id="toc-situações-extremas" class="nav-link" data-scroll-target="#situações-extremas"><span class="header-section-number">4</span> Situações extremas</a>
+  <li><a href="#exemplo-aplicado-dados-rikz" id="toc-exemplo-aplicado-dados-rikz" class="nav-link" data-scroll-target="#exemplo-aplicado-dados-rikz"><span class="header-section-number">4</span> Exemplo aplicado: dados RIKZ</a>
   <ul class="collapse">
-  <li><a href="#cenário-com-r2-elevado" id="toc-cenário-com-r2-elevado" class="nav-link" data-scroll-target="#cenário-com-r2-elevado"><span class="header-section-number">4.1</span> Cenário com <span class="math inline">\(R^2\)</span> elevado</a></li>
-  <li><a href="#cenário-com-r2-baixo" id="toc-cenário-com-r2-baixo" class="nav-link" data-scroll-target="#cenário-com-r2-baixo"><span class="header-section-number">4.2</span> Cenário com <span class="math inline">\(R^2\)</span> baixo</a></li>
-  <li><a href="#visualização-dos-dois-cenários" id="toc-visualização-dos-dois-cenários" class="nav-link" data-scroll-target="#visualização-dos-dois-cenários"><span class="header-section-number">4.3</span> Visualização dos dois cenários</a></li>
-  </ul></li>
-  <li><a href="#exemplo-aplicado-dados-rikz" id="toc-exemplo-aplicado-dados-rikz" class="nav-link" data-scroll-target="#exemplo-aplicado-dados-rikz"><span class="header-section-number">5</span> Exemplo aplicado: dados RIKZ</a>
-  <ul class="collapse">
-  <li><a href="#ajuste-do-modelo" id="toc-ajuste-do-modelo" class="nav-link" data-scroll-target="#ajuste-do-modelo"><span class="header-section-number">5.1</span> Ajuste do modelo</a></li>
-  <li><a href="#cálculo-manual-das-somas-dos-quadrados" id="toc-cálculo-manual-das-somas-dos-quadrados" class="nav-link" data-scroll-target="#cálculo-manual-das-somas-dos-quadrados"><span class="header-section-number">5.2</span> Cálculo manual das somas dos quadrados</a></li>
-  <li><a href="#verificação-com-funções-do-r" id="toc-verificação-com-funções-do-r" class="nav-link" data-scroll-target="#verificação-com-funções-do-r"><span class="header-section-number">5.3</span> Verificação com funções do R</a></li>
-  <li><a href="#interpretação" id="toc-interpretação" class="nav-link" data-scroll-target="#interpretação"><span class="header-section-number">5.4</span> Interpretação</a></li>
-  <li><a href="#visualização-da-partição" id="toc-visualização-da-partição" class="nav-link" data-scroll-target="#visualização-da-partição"><span class="header-section-number">5.5</span> Visualização da partição</a></li>
+  <li><a href="#ajuste-do-modelo" id="toc-ajuste-do-modelo" class="nav-link" data-scroll-target="#ajuste-do-modelo"><span class="header-section-number">4.1</span> Ajuste do modelo</a></li>
+  <li><a href="#cálculo-manual-das-somas-dos-quadrados" id="toc-cálculo-manual-das-somas-dos-quadrados" class="nav-link" data-scroll-target="#cálculo-manual-das-somas-dos-quadrados"><span class="header-section-number">4.2</span> Cálculo manual das somas dos quadrados</a></li>
+  <li><a href="#verificação-com-funções-do-r" id="toc-verificação-com-funções-do-r" class="nav-link" data-scroll-target="#verificação-com-funções-do-r"><span class="header-section-number">4.3</span> Verificação com funções do R</a></li>
+  <li><a href="#interpretação" id="toc-interpretação" class="nav-link" data-scroll-target="#interpretação"><span class="header-section-number">4.4</span> Interpretação</a></li>
+  <li><a href="#visualização-da-partição" id="toc-visualização-da-partição" class="nav-link" data-scroll-target="#visualização-da-partição"><span class="header-section-number">4.5</span> Visualização da partição</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -251,7 +245,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Decomposição algébrica e geométrica da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação R².
+    Decomposição da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação <span class="math inline">\(R^2\)</span>.
   </div>
 </div>
 
@@ -289,12 +283,12 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Ao ajustar um modelo de regressão linear simples, obtemos a reta que minimiza a soma dos quadrados dos resíduos (<span class="math inline">\(SQ_{Res}\)</span>). No entanto, um aspecto fundamental que ainda não foi explorado em profundidade é: <strong>qual a proporção da variação total em <span class="math inline">\(Y\)</span> que o modelo é capaz de explicar?</strong> Para responder a esta pergunta, precisamos decompor a variação total de <span class="math inline">\(Y\)</span> em duas parcelas distintas: uma atribuída à regressão e outra atribuída aos resíduos. Este processo é conhecido como <strong>partição da soma dos quadrados</strong> e culmina no cálculo do <strong>coeficiente de determinação</strong> <span class="math inline">\(R^2\)</span>.</p>
+<p>Ao ajustar um modelo de regressão linear simples, obtemos a reta que minimiza a soma dos quadrados dos resíduos (<span class="math inline">\(SQ_{Res}\)</span>). Um aspecto fundamental deste processo consiste em compreender <strong>qual a proporção da variação total em</strong> <span class="math inline">\(Y\)</span> o modelo é capaz de explicar? Para responder a esta pergunta, precisamos decompor a variação total de <span class="math inline">\(Y\)</span> em duas parcelas distintas: uma atribuída à regressão e outra atribuída aos resíduos. Este processo é conhecido como <strong>partição da soma dos quadrados</strong>.</p>
 <p>Recordando o modelo de regressão linear simples:</p>
 <p><span class="math display">\[Y_i = \hat{\beta}_0 + \hat{\beta}_1 X_i + e_i\]</span></p>
 <p>onde <span class="math inline">\(\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i\)</span> é o valor <strong>ajustado</strong> e <span class="math inline">\(e_i = Y_i - \hat{Y}_i\)</span> é o <strong>resíduo</strong> da <span class="math inline">\(i\)</span>-ésima observação.</p>
-<section id="as-três-componentes-da-variação" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="as-três-componentes-da-variação"><span class="header-section-number">1</span> As três componentes da variação</h2>
+<section id="os-três-componentes-da-variação" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="os-três-componentes-da-variação"><span class="header-section-number">1</span> Os três componentes da variação</h2>
 <p>Consideremos <span class="math inline">\(n\)</span> pares de observações <span class="math inline">\((X_i, Y_i)\)</span> com <span class="math inline">\(i = 1, \ldots, n\)</span>. Definimos três quantidades fundamentais.</p>
 <p><strong>Soma dos Quadrados Total</strong> (<span class="math inline">\(SQ_{Total}\)</span>): mede a variação total de <span class="math inline">\(Y\)</span> em torno de sua média <span class="math inline">\(\bar{Y}\)</span>, independentemente do modelo de regressão.</p>
 <p><span class="math display">\[SQ_{Total} = \sum_{i=1}^{n}(Y_i - \bar{Y})^2\]</span></p>
@@ -314,9 +308,9 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <table class="caption-top table">
 <colgroup>
-<col style="width: 21%">
-<col style="width: 43%">
-<col style="width: 35%">
+<col style="width: 24%">
+<col style="width: 41%">
+<col style="width: 34%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -361,42 +355,7 @@ window.Quarto = {
 <li>O desvio da regressão (<span class="math inline">\(\hat{Y}_k - \bar{Y}\)</span>, em verde) é a porção do desvio total capturada pelo modelo.</li>
 <li>O resíduo (<span class="math inline">\(Y_k - \hat{Y}_k\)</span>, em vermelho) é o que sobra após o ajuste.</li>
 </ul>
-</section>
-<section id="derivação-algébrica-da-partição" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="derivação-algébrica-da-partição"><span class="header-section-number">2</span> Derivação algébrica da partição</h2>
-<p>A propriedade aditiva <span class="math inline">\(SQ_{Total} = SQ_{Reg} + SQ_{Res}\)</span> não é óbvia. Vamos demonstrá-la rigorosamente.</p>
-<section id="a-identidade-fundamental" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="a-identidade-fundamental"><span class="header-section-number">2.1</span> A identidade fundamental</h3>
-<p>O ponto de partida é a seguinte decomposição do desvio de cada observação em relação à média:</p>
-<p><span class="math display">\[Y_i - \bar{Y} = (\hat{Y}_i - \bar{Y}) + (Y_i - \hat{Y}_i)\]</span></p>
-<p>Esta identidade é sempre exata: o desvio total se decompõe na soma do desvio da regressão com o resíduo. Ao elevarmos ambos os lados ao quadrado:</p>
-<p><span class="math display">\[(Y_i - \bar{Y})^2 = \left[(\hat{Y}_i - \bar{Y}) + (Y_i - \hat{Y}_i)\right]^2\]</span></p>
-<p>Expandindo o lado direito:</p>
-<p><span class="math display">\[(Y_i - \bar{Y})^2 = (\hat{Y}_i - \bar{Y})^2 + (Y_i - \hat{Y}_i)^2 + 2(\hat{Y}_i - \bar{Y})(Y_i - \hat{Y}_i)\]</span></p>
-<p>Somando sobre todas as <span class="math inline">\(n\)</span> observações:</p>
-<p><span class="math display">\[\sum_{i=1}^{n}(Y_i - \bar{Y})^2 = \sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})^2 + \sum_{i=1}^{n}(Y_i - \hat{Y}_i)^2 + 2\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})(Y_i - \hat{Y}_i)\]</span></p>
-<p>Ou seja:</p>
-<p><span class="math display">\[SQ_{Total} = SQ_{Reg} + SQ_{Res} + 2 \underbrace{\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})\, e_i}_{\text{produto cruzado}}\]</span></p>
-<p>Para que a partição valha, é necessário que o <strong>produto cruzado</strong> seja nulo.</p>
-</section>
-<section id="anulação-do-produto-cruzado" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="anulação-do-produto-cruzado"><span class="header-section-number">2.2</span> Anulação do produto cruzado</h3>
-<p>Denotando o resíduo por <span class="math inline">\(e_i = Y_i - \hat{Y}_i\)</span>, precisamos mostrar que:</p>
-<p><span class="math display">\[\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})\, e_i = 0\]</span></p>
-<p>Como a reta de regressão passa pelo ponto <span class="math inline">\((\bar{X}, \bar{Y})\)</span>, temos <span class="math inline">\(\bar{Y} = \hat{\beta}_0 + \hat{\beta}_1 \bar{X}\)</span>. Portanto:</p>
-<p><span class="math display">\[\hat{Y}_i - \bar{Y} = (\hat{\beta}_0 + \hat{\beta}_1 X_i) - (\hat{\beta}_0 + \hat{\beta}_1 \bar{X}) = \hat{\beta}_1(X_i - \bar{X})\]</span></p>
-<p>Substituindo:</p>
-<p><span class="math display">\[\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})\, e_i = \hat{\beta}_1 \sum_{i=1}^{n}(X_i - \bar{X})\, e_i\]</span></p>
-<p>Expandindo <span class="math inline">\((X_i - \bar{X}) = X_i - \bar{X}\)</span>:</p>
-<p><span class="math display">\[\sum_{i=1}^{n}(X_i - \bar{X})\, e_i = \sum_{i=1}^{n} X_i\, e_i - \bar{X}\sum_{i=1}^{n} e_i\]</span></p>
-<p>As <strong>condições de mínimos quadrados</strong> (equações normais do MMQ) garantem que:</p>
-<ol type="1">
-<li><span class="math inline">\(\displaystyle\sum_{i=1}^{n} e_i = 0\)</span> — a soma dos resíduos é zero.</li>
-<li><span class="math inline">\(\displaystyle\sum_{i=1}^{n} X_i\, e_i = 0\)</span> — os resíduos são não correlacionados com <span class="math inline">\(X\)</span>.</li>
-</ol>
-<p>Portanto:</p>
-<p><span class="math display">\[\sum_{i=1}^{n}(X_i - \bar{X})\, e_i = 0 - \bar{X} \cdot 0 = 0\]</span></p>
-<p>e consequentemente o produto cruzado é nulo. Isto demonstra a identidade:</p>
+<p>Uma propriedade da decomposição da soma dos quadrados é que <span class="math inline">\(SQ_{Total} = SQ_{Reg} + SQ_{Res}\)</span> portanto:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -412,20 +371,10 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="o-argumento-de-ortogonalidade" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="o-argumento-de-ortogonalidade"><span class="header-section-number">2.3</span> O argumento de ortogonalidade</h3>
-<p>A nulidade do produto cruzado possui uma interpretação geométrica elegante. Podemos representar as <span class="math inline">\(n\)</span> observações como vetores em <span class="math inline">\(\mathbb{R}^n\)</span>. Nesta perspectiva:</p>
-<ul>
-<li>O vetor <span class="math inline">\(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}\)</span> (desvios dos valores ajustados) pertence ao <strong>espaço coluna</strong> da matriz do modelo <span class="math inline">\(\mathbf{X}\)</span>.</li>
-<li>O vetor <span class="math inline">\(\mathbf{e} = \mathbf{Y} - \hat{\mathbf{Y}}\)</span> (resíduos) é <strong>ortogonal</strong> ao espaço coluna de <span class="math inline">\(\mathbf{X}\)</span>, pois as condições de mínimos quadrados garantem exatamente esta propriedade.</li>
-</ul>
-<p>A projeção <span class="math inline">\(\hat{\mathbf{Y}}\)</span> é a projeção ortogonal de <span class="math inline">\(\mathbf{Y}\)</span> sobre o espaço coluna de <span class="math inline">\(\mathbf{X}\)</span>. A ortogonalidade entre <span class="math inline">\(\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}\)</span> e <span class="math inline">\(\mathbf{e}\)</span> é análoga ao <strong>teorema de Pitágoras</strong>: o quadrado da hipotenusa (desvio total) é igual à soma dos quadrados dos catetos (desvio da regressão e resíduo). Assim, <span class="math inline">\(SQ_{Total} = SQ_{Reg} + SQ_{Res}\)</span> é simplesmente o teorema de Pitágoras no espaço <span class="math inline">\(\mathbb{R}^n\)</span>.</p>
-</section>
-</section>
-<section id="o-coeficiente-de-determinação-r2" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="o-coeficiente-de-determinação-r2"><span class="header-section-number">3</span> O coeficiente de determinação <span class="math inline">\(R^2\)</span></h2>
-<section id="definição-e-interpretação" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="definição-e-interpretação"><span class="header-section-number">3.1</span> Definição e interpretação</h3>
+<section id="o-coeficiente-de-determinação-r2" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="o-coeficiente-de-determinação-r2"><span class="header-section-number">2</span> O coeficiente de determinação <span class="math inline">\(R^2\)</span></h2>
+<section id="definição-e-interpretação" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="definição-e-interpretação"><span class="header-section-number">2.1</span> Definição e interpretação</h3>
 <p>A partição da soma dos quadrados nos permite definir o <strong>coeficiente de determinação</strong> <span class="math inline">\(R^2\)</span> como a proporção da variação total em <span class="math inline">\(Y\)</span> que é explicada pelo modelo de regressão:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -447,50 +396,53 @@ window.Quarto = {
 <li><span class="math inline">\(0 &lt; R^2 &lt; 1\)</span>: situação usual, em que o modelo explica uma fração <span class="math inline">\(R^2 \times 100\%\)</span> da variação total.</li>
 </ul>
 </section>
-<section id="formulações-alternativas" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="formulações-alternativas"><span class="header-section-number">3.2</span> Formulações alternativas</h3>
+<section id="formulações-alternativas" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="formulações-alternativas"><span class="header-section-number">2.2</span> Formulações alternativas</h3>
 <p><span class="math inline">\(SQ_{Reg}\)</span> pode ser expresso em termos dos coeficientes do modelo e dos somatórios dos quadrados. Como <span class="math inline">\(\hat{Y}_i - \bar{Y} = \hat{\beta}_1(X_i - \bar{X})\)</span>:</p>
 <p><span class="math display">\[SQ_{Reg} = \sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})^2 = \hat{\beta}_1^2 \sum_{i=1}^{n}(X_i - \bar{X})^2 = \hat{\beta}_1^2 \cdot SQ_X\]</span></p>
 <p>Substituindo <span class="math inline">\(\hat{\beta}_1 = SQ_{XY}/SQ_X\)</span>:</p>
 <p><span class="math display">\[SQ_{Reg} = \frac{SQ_{XY}^2}{SQ_X^2} \cdot SQ_X = \frac{SQ_{XY}^2}{SQ_X} = \hat{\beta}_1 \cdot SQ_{XY}\]</span></p>
 <p>onde <span class="math inline">\(SQ_{XY} = \sum(X_i - \bar{X})(Y_i - \bar{Y})\)</span> é o produto cruzado de <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span>, e <span class="math inline">\(SQ_X = \sum(X_i - \bar{X})^2\)</span>.</p>
 </section>
-<section id="relação-com-o-coeficiente-de-correlação" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="relação-com-o-coeficiente-de-correlação"><span class="header-section-number">3.3</span> Relação com o coeficiente de correlação</h3>
+<section id="relação-com-o-coeficiente-de-correlação" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="relação-com-o-coeficiente-de-correlação"><span class="header-section-number">2.3</span> Relação com o coeficiente de correlação</h3>
 <p>Na regressão linear <strong>simples</strong>, <span class="math inline">\(R^2\)</span> é exatamente igual ao quadrado do coeficiente de correlação de Pearson <span class="math inline">\(r\)</span>:</p>
 <p><span class="math display">\[R^2 = r^2\]</span></p>
 <p><strong>Demonstração.</strong> Partindo de <span class="math inline">\(R^2 = SQ_{Reg}/SQ_{Total} = SQ_{XY}^2 / (SQ_X \cdot SQ_Y)\)</span>:</p>
-<p><span class="math display">\[R^2 = \frac{SQ_{XY}^2}{SQ_X \cdot SQ_Y} = \left(\frac{SQ_{XY}}{\sqrt{SQ_X \cdot SQ_Y}}\right)^2 = r^2 \quad \blacksquare\]</span></p>
+<p><span class="math display">\[R^2 = \frac{SQ_{XY}^2}{SQ_X \cdot SQ_Y} = \left(\frac{SQ_{XY}}{\sqrt{SQ_X \cdot SQ_Y}}\right)^2 = r^2\]</span></p>
+<blockquote class="blockquote">
 <p>Esta relação é exclusiva da regressão simples. Na regressão <strong>múltipla</strong>, <span class="math inline">\(R^2\)</span> generaliza o conceito de correlação, mas não é simplesmente o quadrado de uma correlação bivariada.</p>
+</blockquote>
 </section>
-<section id="limitações-do-r2" class="level3" data-number="3.4">
-<h3 data-number="3.4" class="anchored" data-anchor-id="limitações-do-r2"><span class="header-section-number">3.4</span> Limitações do <span class="math inline">\(R^2\)</span></h3>
+<section id="limitações-do-r2" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="limitações-do-r2"><span class="header-section-number">2.4</span> Limitações do <span class="math inline">\(R^2\)</span></h3>
 <p>Embora <span class="math inline">\(R^2\)</span> seja uma medida de ajuste amplamente utilizada, é importante reconhecer suas limitações:</p>
 <ol type="1">
-<li><p><strong><span class="math inline">\(R^2\)</span> não mede causalidade.</strong> Uma associação forte entre <span class="math inline">\(Y\)</span> e <span class="math inline">\(X\)</span> não implica que <span class="math inline">\(X\)</span> cause <span class="math inline">\(Y\)</span>. Uma terceira variável pode ser responsável pela associação observada.</p></li>
-<li><p><strong><span class="math inline">\(R^2\)</span> depende da amplitude de <span class="math inline">\(X\)</span>.</strong> Ampliar o intervalo dos valores de <span class="math inline">\(X\)</span> tende a aumentar <span class="math inline">\(SQ_{Reg}\)</span> e, consequentemente, <span class="math inline">\(R^2\)</span>, mesmo que a dispersão ao redor da reta não mude.</p></li>
-<li><p><strong><span class="math inline">\(R^2\)</span> alto não garante bom ajuste.</strong> Um modelo pode ter <span class="math inline">\(R^2\)</span> elevado e ainda apresentar padrões sistemáticos nos resíduos, indicando violação de suposições do modelo.</p></li>
-<li><p><strong><span class="math inline">\(R^2\)</span> baixo não invalida o modelo.</strong> Em muitas aplicações nas ciências biológicas e sociais, <span class="math inline">\(R^2\)</span> moderados (0,3–0,5) já refletem relações substantivas e interpretáveis.</p></li>
-<li><p><strong><span class="math inline">\(R^2\)</span> não é comparável entre conjuntos de dados.</strong> Dois modelos com <span class="math inline">\(R^2\)</span> iguais em datasets diferentes não têm necessariamente a mesma qualidade de ajuste.</p></li>
+<li><p><span class="math inline">\(R^2\)</span> não mede causalidade. Uma associação forte entre <span class="math inline">\(Y\)</span> e <span class="math inline">\(X\)</span> não implica que <span class="math inline">\(X\)</span> cause <span class="math inline">\(Y\)</span>. Uma terceira variável pode ser responsável pela associação observada.</p></li>
+<li><p><span class="math inline">\(R^2\)</span> depende da amplitude de <span class="math inline">\(X\)</span>. Ampliar o intervalo dos valores de <span class="math inline">\(X\)</span> tende a aumentar <span class="math inline">\(SQ_{Reg}\)</span> e, consequentemente, <span class="math inline">\(R^2\)</span>, mesmo que a dispersão ao redor da reta não mude.</p></li>
+<li><p><span class="math inline">\(R^2\)</span> alto não garante bom ajuste. Um modelo pode ter <span class="math inline">\(R^2\)</span> elevado e ainda apresentar padrões sistemáticos nos resíduos, indicando violação de suposições do modelo.</p></li>
+<li><p><span class="math inline">\(R^2\)</span> baixo não invalida o modelo. Em muitas aplicações nas ciências biológicas e sociais, <span class="math inline">\(R^2\)</span> moderados (0,3–0,5) já refletem relações substantivas e interpretáveis.</p></li>
+<li><p><span class="math inline">\(R^2\)</span> não é comparável entre conjuntos de dados. Dois modelos com <span class="math inline">\(R^2\)</span> iguais em datasets diferentes não têm necessariamente a mesma qualidade de ajuste.</p></li>
 </ol>
 </section>
 </section>
-<section id="situações-extremas" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="situações-extremas"><span class="header-section-number">4</span> Situações extremas</h2>
+<section id="situações-extremas" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="situações-extremas"><span class="header-section-number">3</span> Situações extremas</h2>
 <p>Para compreender melhor o significado de <span class="math inline">\(R^2\)</span>, vamos simular dois cenários contrastantes: um com <span class="math inline">\(R^2\)</span> elevado e outro com <span class="math inline">\(R^2\)</span> baixo.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="dv">60</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X_sim <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="at">length.out =</span> n_sim)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cenário 1: R² alto (dispersão pequena em torno da reta)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>Y_alto <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> X_sim <span class="sc">+</span> <span class="fu">rnorm</span>(n_sim, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Cenário 2: R² baixo (dispersão grande em torno da reta)</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Y_baixo <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> X_sim <span class="sc">+</span> <span class="fu">rnorm</span>(n_sim, <span class="at">sd =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>y_det <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> X_sim</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Cenário 1: R² alto (dispersão pequena em torno da reta)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Y_alto <span class="ot">&lt;-</span> y_det <span class="sc">+</span> <span class="fu">rnorm</span>(n_sim, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Cenário 2: R² baixo (dispersão grande em torno da reta)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Y_baixo <span class="ot">&lt;-</span> y_det <span class="sc">+</span> <span class="fu">rnorm</span>(n_sim, <span class="at">sd =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="cenário-com-r2-elevado" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="cenário-com-r2-elevado"><span class="header-section-number">4.1</span> Cenário com <span class="math inline">\(R^2\)</span> elevado</h3>
+<section id="cenário-com-r2-elevado" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="cenário-com-r2-elevado"><span class="header-section-number">3.1</span> Cenário com <span class="math inline">\(R^2\)</span> elevado</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_alto <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">X =</span> X_sim, <span class="at">Y =</span> Y_alto)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mod_alto <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df_alto)</span>
@@ -506,32 +458,31 @@ window.Quarto = {
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificação: SQTotal = SQReg + SQRes</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQTotal:"</span>, <span class="fu">round</span>(SQTotal_alto, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SQTotal: 3719.5 </code></pre>
+<pre><code>SQTotal: 3870.97 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQReg + SQRes:"</span>, <span class="fu">round</span>(SQReg_alto <span class="sc">+</span> SQRes_alto, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQReg:"</span>, <span class="fu">round</span>(SQReg_alto, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SQReg + SQRes: 3719.5 </code></pre>
+<pre><code>SQReg: 3773.89 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R² manual</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>R2_alto_manual <span class="ot">&lt;-</span> SQReg_alto <span class="sc">/</span> SQTotal_alto</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (manual):"</span>, <span class="fu">round</span>(R2_alto_manual, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQRes:"</span>, <span class="fu">round</span>(SQRes_alto, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>R² (manual): 0.9536 </code></pre>
+<pre><code>SQRes: 97.08 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R² pela função summary</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (summary):"</span>, <span class="fu">round</span>(<span class="fu">summary</span>(mod_alto)<span class="sc">$</span>r.squared, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R² manual</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>R2_alto_manual <span class="ot">&lt;-</span> SQReg_alto <span class="sc">/</span> SQTotal_alto</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (manual):"</span>, <span class="fu">round</span>(R2_alto_manual, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>R² (summary): 0.9536 </code></pre>
+<pre><code>R² (manual): 0.9749 </code></pre>
 </div>
 </div>
 </section>
-<section id="cenário-com-r2-baixo" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="cenário-com-r2-baixo"><span class="header-section-number">4.2</span> Cenário com <span class="math inline">\(R^2\)</span> baixo</h3>
+<section id="cenário-com-r2-baixo" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="cenário-com-r2-baixo"><span class="header-section-number">3.2</span> Cenário com <span class="math inline">\(R^2\)</span> baixo</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_baixo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">X =</span> X_sim, <span class="at">Y =</span> Y_baixo)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mod_baixo <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> X, <span class="at">data =</span> df_baixo)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo manual</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo manual das somas dos quadrados</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>Ybar_baixo <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y_baixo)</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>Yfit_baixo <span class="ot">&lt;-</span> <span class="fu">fitted</span>(mod_baixo)</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -539,27 +490,29 @@ window.Quarto = {
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>SQReg_baixo   <span class="ot">&lt;-</span> <span class="fu">sum</span>((Yfit_baixo <span class="sc">-</span> Ybar_baixo)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>SQRes_baixo   <span class="ot">&lt;-</span> <span class="fu">sum</span>((Y_baixo <span class="sc">-</span> Yfit_baixo)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQTotal:"</span>, <span class="fu">round</span>(SQTotal_baixo, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificação: SQTotal = SQReg + SQRes</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQTotal:"</span>, <span class="fu">round</span>(SQTotal_baixo, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SQTotal: 9305.3 </code></pre>
+<pre><code>SQTotal: 10346.4 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQReg + SQRes:"</span>, <span class="fu">round</span>(SQReg_baixo <span class="sc">+</span> SQRes_baixo, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQReg:"</span>, <span class="fu">round</span>(SQReg_baixo, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SQReg + SQRes: 9305.3 </code></pre>
+<pre><code>SQReg: 3262.46 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>R2_baixo_manual <span class="ot">&lt;-</span> SQReg_baixo <span class="sc">/</span> SQTotal_baixo</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (manual):"</span>, <span class="fu">round</span>(R2_baixo_manual, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SQRes:"</span>, <span class="fu">round</span>(SQRes_baixo, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>R² (manual): 0.2547 </code></pre>
+<pre><code>SQRes: 7083.93 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (summary):"</span>, <span class="fu">round</span>(<span class="fu">summary</span>(mod_baixo)<span class="sc">$</span>r.squared, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R² manual</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>R2_baixo_manual <span class="ot">&lt;-</span> SQReg_baixo <span class="sc">/</span> SQTotal_baixo</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (manual):"</span>, <span class="fu">round</span>(R2_baixo_manual, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>R² (summary): 0.2547 </code></pre>
+<pre><code>R² (manual): 0.3153 </code></pre>
 </div>
 </div>
 </section>
-<section id="visualização-dos-dois-cenários" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="visualização-dos-dois-cenários"><span class="header-section-number">4.3</span> Visualização dos dois cenários</h3>
+<section id="visualização-dos-dois-cenários" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="visualização-dos-dois-cenários"><span class="header-section-number">3.3</span> Visualização dos dois cenários</h3>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -569,26 +522,25 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Em ambos os cenários a reta de regressão tem a mesma inclinação verdadeira (<span class="math inline">\(\beta_1 = 3\)</span>). A diferença está na variância residual: à esquerda, os pontos se concentram em torno da reta (<span class="math inline">\(R^2 = 0.954\)</span>); à direita, a dispersão é muito maior e a regressão explica uma fração pequena da variação total (<span class="math inline">\(R^2 = 0.255\)</span>).</p>
-<p>A figura confirma ainda que a identidade <span class="math inline">\(SQ_{Total} = SQ_{Reg} + SQ_{Res}\)</span> é verificada numericamente em ambos os casos, com o mesmo <span class="math inline">\(SQ_{Reg}\)</span> nos dois cenários — o que difere é o <span class="math inline">\(SQ_{Res}\)</span> e, consequentemente, o <span class="math inline">\(SQ_{Total}\)</span>.</p>
+<p>Em ambos os cenários, a reta de regressão apresenta a mesma inclinação populacional (<span class="math inline">\(\beta_1 = 3\)</span>), o que produz valores de <span class="math inline">\(SQ_{Reg}\)</span> bastante semelhantes. A diferença fundamental reside na variância residual. Na figura à esquerda, os pontos estão fortemente concentrados em torno da reta, o que implica um <span class="math inline">\(SQ_{Res}\)</span> relativamente pequeno em comparação com a variação total (<span class="math inline">\(SQ_{Total}\)</span>) e, consequentemente, um <span class="math inline">\(R^2\)</span> elevado (<span class="math inline">\(SQ_{Res} = 97.08\)</span>, <span class="math inline">\(R^2 = 0.975\)</span>). Em contraste, na figura à direita, observa-se maior dispersão dos pontos em torno da reta ajustada, resultando em um <span class="math inline">\(SQ_{Res}\)</span> mais elevado e, portanto, em um <span class="math inline">\(R^2\)</span> mais baixo (<span class="math inline">\(SQ_{Res} = 7083.93\)</span>, <span class="math inline">\(R^2 = 0.315\)</span>).</p>
 </section>
 </section>
-<section id="exemplo-aplicado-dados-rikz" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="exemplo-aplicado-dados-rikz"><span class="header-section-number">5</span> Exemplo aplicado: dados RIKZ</h2>
+<section id="exemplo-aplicado-dados-rikz" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="exemplo-aplicado-dados-rikz"><span class="header-section-number">4</span> Exemplo aplicado: dados RIKZ</h2>
 <p>Vamos aplicar todos os conceitos ao conjunto de dados RIKZ, que contém medidas de riqueza de macro-fauna praial (número de espécies) e o índice de exposição às ondas (NAP) coletados em <span class="math inline">\(45\)</span> amostras ao longo da costa da Holanda <span class="citation" data-cites="zuur2009mixed">(<a href="#ref-zuur2009mixed" role="doc-biblioref">Zuur et al. 2009</a>)</span>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rikz <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/FCopf/datasets/refs/heads/main/RIKZ.csv'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="ajuste-do-modelo" class="level3" data-number="5.1">
-<h3 data-number="5.1" class="anchored" data-anchor-id="ajuste-do-modelo"><span class="header-section-number">5.1</span> Ajuste do modelo</h3>
+<section id="ajuste-do-modelo" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="ajuste-do-modelo"><span class="header-section-number">4.1</span> Ajuste do modelo</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mod_rikz <span class="ot">&lt;-</span> <span class="fu">lm</span>(Richness <span class="sc">~</span> NAP, <span class="at">data =</span> rikz)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>O modelo ajustado é:</p>
 <p><span class="math display">\[\widehat{Richness} = 6.686 + (-2.867) \times NAP\]</span></p>
 </section>
-<section id="cálculo-manual-das-somas-dos-quadrados" class="level3" data-number="5.2">
-<h3 data-number="5.2" class="anchored" data-anchor-id="cálculo-manual-das-somas-dos-quadrados"><span class="header-section-number">5.2</span> Cálculo manual das somas dos quadrados</h3>
+<section id="cálculo-manual-das-somas-dos-quadrados" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="cálculo-manual-das-somas-dos-quadrados"><span class="header-section-number">4.2</span> Cálculo manual das somas dos quadrados</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>n_rk     <span class="ot">&lt;-</span> <span class="fu">nrow</span>(rikz)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>Ybar_rk  <span class="ot">&lt;-</span> <span class="fu">mean</span>(rikz<span class="sc">$</span>Richness)</span>
@@ -635,10 +587,10 @@ window.Quarto = {
 <span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
 <span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Richness  =</span> <span class="st">"Richness"</span>,</span>
 <span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">NAP       =</span> <span class="st">"NAP"</span>,</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Yfit      =</span> <span class="fu">html</span>(<span class="st">"&amp;#374;&amp;#770;&lt;sub&gt;i&lt;/sub&gt;"</span>),</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">dev_total =</span> <span class="fu">html</span>(<span class="st">"Y&lt;sub&gt;i&lt;/sub&gt; - &amp;#256;"</span>),</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">dev_reg   =</span> <span class="fu">html</span>(<span class="st">"&amp;#374;&amp;#770;&lt;sub&gt;i&lt;/sub&gt; - &amp;#256;"</span>),</span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">dev_res   =</span> <span class="fu">html</span>(<span class="st">"Y&lt;sub&gt;i&lt;/sub&gt; - &amp;#374;&amp;#770;&lt;sub&gt;i&lt;/sub&gt;"</span>)</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Yfit      =</span> gt<span class="sc">::</span><span class="fu">md</span>(<span class="st">"$</span><span class="sc">\\</span><span class="st">hat{Y}_i$"</span>),</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">dev_total =</span> gt<span class="sc">::</span><span class="fu">md</span>(<span class="st">"$Y_i - </span><span class="sc">\\</span><span class="st">bar{Y}$"</span>),</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">dev_reg   =</span> gt<span class="sc">::</span><span class="fu">md</span>(<span class="st">"$</span><span class="sc">\\</span><span class="st">hat{Y}_i - </span><span class="sc">\\</span><span class="st">bar{Y}$"</span>),</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">dev_res   =</span> gt<span class="sc">::</span><span class="fu">md</span>(<span class="st">"$Y_i - </span><span class="sc">\\</span><span class="st">hat{Y}_i$"</span>)</span>
 <span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -649,23 +601,23 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
 </figcaption>
 <div aria-describedby="tbl-rikz-decomp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="qtdtkqiqmq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qtdtkqiqmq table {
+<div id="tpobacxifq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tpobacxifq table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#qtdtkqiqmq thead, #qtdtkqiqmq tbody, #qtdtkqiqmq tfoot, #qtdtkqiqmq tr, #qtdtkqiqmq td, #qtdtkqiqmq th {
+#tpobacxifq thead, #tpobacxifq tbody, #tpobacxifq tfoot, #tpobacxifq tr, #tpobacxifq td, #tpobacxifq th {
   border-style: none;
 }
 
-#qtdtkqiqmq p {
+#tpobacxifq p {
   margin: 0;
   padding: 0;
 }
 
-#qtdtkqiqmq .gt_table {
+#tpobacxifq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -691,12 +643,12 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-left-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_caption {
+#tpobacxifq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#qtdtkqiqmq .gt_title {
+#tpobacxifq .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -708,7 +660,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-bottom-width: 0;
 }
 
-#qtdtkqiqmq .gt_subtitle {
+#tpobacxifq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -720,7 +672,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-top-width: 0;
 }
 
-#qtdtkqiqmq .gt_heading {
+#tpobacxifq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -732,13 +684,13 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-right-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_bottom_border {
+#tpobacxifq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_col_headings {
+#tpobacxifq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -753,7 +705,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-right-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_col_heading {
+#tpobacxifq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -773,7 +725,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   overflow-x: hidden;
 }
 
-#qtdtkqiqmq .gt_column_spanner_outer {
+#tpobacxifq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -785,15 +737,15 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   padding-right: 4px;
 }
 
-#qtdtkqiqmq .gt_column_spanner_outer:first-child {
+#tpobacxifq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qtdtkqiqmq .gt_column_spanner_outer:last-child {
+#tpobacxifq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qtdtkqiqmq .gt_column_spanner {
+#tpobacxifq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -805,11 +757,11 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   width: 100%;
 }
 
-#qtdtkqiqmq .gt_spanner_row {
+#tpobacxifq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#qtdtkqiqmq .gt_group_heading {
+#tpobacxifq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -835,7 +787,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   text-align: left;
 }
 
-#qtdtkqiqmq .gt_empty_group_heading {
+#tpobacxifq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -850,15 +802,15 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   vertical-align: middle;
 }
 
-#qtdtkqiqmq .gt_from_md > :first-child {
+#tpobacxifq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qtdtkqiqmq .gt_from_md > :last-child {
+#tpobacxifq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qtdtkqiqmq .gt_row {
+#tpobacxifq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -877,7 +829,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   overflow-x: hidden;
 }
 
-#qtdtkqiqmq .gt_stub {
+#tpobacxifq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -890,7 +842,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   padding-right: 5px;
 }
 
-#qtdtkqiqmq .gt_stub_row_group {
+#tpobacxifq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -904,15 +856,15 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   vertical-align: top;
 }
 
-#qtdtkqiqmq .gt_row_group_first td {
+#tpobacxifq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#qtdtkqiqmq .gt_row_group_first th {
+#tpobacxifq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#qtdtkqiqmq .gt_summary_row {
+#tpobacxifq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -922,16 +874,16 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   padding-right: 5px;
 }
 
-#qtdtkqiqmq .gt_first_summary_row {
+#tpobacxifq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_first_summary_row.thick {
+#tpobacxifq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#qtdtkqiqmq .gt_last_summary_row {
+#tpobacxifq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -941,7 +893,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-bottom-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_grand_summary_row {
+#tpobacxifq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -951,7 +903,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   padding-right: 5px;
 }
 
-#qtdtkqiqmq .gt_first_grand_summary_row {
+#tpobacxifq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -961,7 +913,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-top-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_last_grand_summary_row_top {
+#tpobacxifq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -971,11 +923,11 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-bottom-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_striped {
+#tpobacxifq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qtdtkqiqmq .gt_table_body {
+#tpobacxifq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -984,7 +936,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-bottom-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_footnotes {
+#tpobacxifq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -998,7 +950,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-right-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_footnote {
+#tpobacxifq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1007,7 +959,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   padding-right: 5px;
 }
 
-#qtdtkqiqmq .gt_sourcenotes {
+#tpobacxifq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1021,7 +973,7 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   border-right-color: #D3D3D3;
 }
 
-#qtdtkqiqmq .gt_sourcenote {
+#tpobacxifq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1029,72 +981,72 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
   padding-right: 5px;
 }
 
-#qtdtkqiqmq .gt_left {
+#tpobacxifq .gt_left {
   text-align: left;
 }
 
-#qtdtkqiqmq .gt_center {
+#tpobacxifq .gt_center {
   text-align: center;
 }
 
-#qtdtkqiqmq .gt_right {
+#tpobacxifq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qtdtkqiqmq .gt_font_normal {
+#tpobacxifq .gt_font_normal {
   font-weight: normal;
 }
 
-#qtdtkqiqmq .gt_font_bold {
+#tpobacxifq .gt_font_bold {
   font-weight: bold;
 }
 
-#qtdtkqiqmq .gt_font_italic {
+#tpobacxifq .gt_font_italic {
   font-style: italic;
 }
 
-#qtdtkqiqmq .gt_super {
+#tpobacxifq .gt_super {
   font-size: 65%;
 }
 
-#qtdtkqiqmq .gt_footnote_marks {
+#tpobacxifq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#qtdtkqiqmq .gt_asterisk {
+#tpobacxifq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#qtdtkqiqmq .gt_indent_1 {
+#tpobacxifq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#qtdtkqiqmq .gt_indent_2 {
+#tpobacxifq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#qtdtkqiqmq .gt_indent_3 {
+#tpobacxifq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#qtdtkqiqmq .gt_indent_4 {
+#tpobacxifq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#qtdtkqiqmq .gt_indent_5 {
+#tpobacxifq .gt_indent_5 {
   text-indent: 25px;
 }
 
-#qtdtkqiqmq .katex-display {
+#tpobacxifq .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#qtdtkqiqmq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#tpobacxifq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1104,10 +1056,10 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
 <tr class="gt_col_headings header">
 <th id="Richness" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Richness</th>
 <th id="NAP" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">NAP</th>
-<th id="Yfit" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Ŷ̂<sub>i</sub></th>
-<th id="dev_total" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Y<sub>i</sub> - Ā</th>
-<th id="dev_reg" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Ŷ̂<sub>i</sub> - Ā</th>
-<th id="dev_res" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Y<sub>i</sub> - Ŷ̂<sub>i</sub></th>
+<th id="Yfit" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><span class="math inline">\(\hat{Y}_i\)</span></th>
+<th id="dev_total" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><span class="math inline">\(Y_i - \bar{Y}\)</span></th>
+<th id="dev_reg" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><span class="math inline">\(\hat{Y}_i - \bar{Y}\)</span></th>
+<th id="dev_res" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><span class="math inline">\(Y_i - \hat{Y}_i\)</span></th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
@@ -1201,8 +1153,8 @@ Tabela&nbsp;1: Primeiros 10 valores da decomposição da soma dos quadrados (RIK
 </div>
 </div>
 </section>
-<section id="verificação-com-funções-do-r" class="level3" data-number="5.3">
-<h3 data-number="5.3" class="anchored" data-anchor-id="verificação-com-funções-do-r"><span class="header-section-number">5.3</span> Verificação com funções do R</h3>
+<section id="verificação-com-funções-do-r" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="verificação-com-funções-do-r"><span class="header-section-number">4.3</span> Verificação com funções do R</h3>
 <p>As somas dos quadrados podem ser extraídas diretamente da tabela ANOVA da regressão:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_rikz)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1217,63 +1169,78 @@ Residuals 43 744.12   17.31
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<p>A primeira linha (<code>NAP</code>) corresponde a <span class="math inline">\(SQ_{Reg} = 357.53\)</span> e a segunda linha (<code>Residuals</code>) a <span class="math inline">\(SQ_{Res} = 744.12\)</span>. Confirmamos que estes valores coincidem com os calculados manualmente.</p>
-<p>O coeficiente de determinação <span class="math inline">\(R^2\)</span> pode ser obtido tanto manualmente quanto pela função <code>summary</code>:</p>
+<p>As somas dos quadrados estão na coluna <code>Sum sq</code>. A primeira linha (<code>NAP</code>) corresponde a <span class="math inline">\(SQ_{Reg} = 357.53\)</span> e a segunda linha (<code>Residuals</code>) a <span class="math inline">\(SQ_{Res} = 744.12\)</span>. Confirmamos que estes valores coincidem com os calculados manualmente. O <span class="math inline">\(SQ_{Total}\)</span> não aparece na tabela mais pode ser facilmente obtido pela soma dos outros dois.</p>
+<p>O coeficiente de determinação <span class="math inline">\(R^2\)</span> pode ser obtido pela função <code>summary</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R² manual</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>R2_rk_manual <span class="ot">&lt;-</span> SQReg_rk <span class="sc">/</span> SQTotal_rk</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (manual):"</span>, <span class="fu">round</span>(R2_rk_manual, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>R² (manual): 0.3245 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R² pela função summary</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>R2_rk_func <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_rikz)<span class="sc">$</span>r.squared</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (summary):"</span>, <span class="fu">round</span>(R2_rk_func, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>R2_rk_func <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_rikz)<span class="sc">$</span>r.squared</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R² (summary):"</span>, <span class="fu">round</span>(R2_rk_func, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R² (summary): 0.3245 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relação com o coeficiente de correlação de Pearson</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>r_rk <span class="ot">&lt;-</span> <span class="fu">cor</span>(rikz<span class="sc">$</span>Richness, rikz<span class="sc">$</span>NAP)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"r² (Pearson):"</span>, <span class="fu">round</span>(r_rk<span class="sc">^</span><span class="dv">2</span>, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relação com o coeficiente de correlação de Pearson</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>r_rk <span class="ot">&lt;-</span> <span class="fu">cor</span>(rikz<span class="sc">$</span>Richness, rikz<span class="sc">$</span>NAP)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"r² (Pearson):"</span>, <span class="fu">round</span>(r_rk<span class="sc">^</span><span class="dv">2</span>, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>r² (Pearson): 0.3245 </code></pre>
 </div>
 </div>
 <p>Os três valores são idênticos, confirmando a relação <span class="math inline">\(R^2 = r^2\)</span> na regressão simples.</p>
 </section>
-<section id="interpretação" class="level3" data-number="5.4">
-<h3 data-number="5.4" class="anchored" data-anchor-id="interpretação"><span class="header-section-number">5.4</span> Interpretação</h3>
+<section id="interpretação" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="interpretação"><span class="header-section-number">4.4</span> Interpretação</h3>
 <p>O modelo de regressão linear <span class="math inline">\(Richness \sim NAP\)</span> explica 32.5% da variação total na riqueza de espécies (<span class="math inline">\(R^2 = 0.3245\)</span>). Em termos das somas dos quadrados:</p>
 <p><span class="math display">\[SQ_{Total} = SQ_{Reg} + SQ_{Res}\]</span> <span class="math display">\[1101.6 = 357.5 + 744.1\]</span></p>
 <p>Os 67.6% restantes da variação não são explicados pelo NAP e estão atribuídos ao resíduo — podem refletir a influência de outras variáveis ambientais, variação natural entre espécies ou erros de medição.</p>
 </section>
-<section id="visualização-da-partição" class="level3" data-number="5.5">
-<h3 data-number="5.5" class="anchored" data-anchor-id="visualização-da-partição"><span class="header-section-number">5.5</span> Visualização da partição</h3>
+<section id="visualização-da-partição" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="visualização-da-partição"><span class="header-section-number">4.5</span> Visualização da partição</h3>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_rikz_plot <span class="ot">&lt;-</span> rikz <span class="sc">|&gt;</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Yfit =</span> Yfit_rk,</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Ybar =</span> Ybar_rk)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_rikz_plot, <span class="fu">aes</span>(<span class="at">x =</span> NAP, <span class="at">y =</span> Richness)) <span class="sc">+</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> Ybar_rk, <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Desvios da regressão (verde): Ybar -&gt; Yfit</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> NAP, <span class="at">y =</span> Ybar, <span class="at">yend =</span> Yfit),</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Resíduos (vermelho): Yfit -&gt; Y</span></span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">xend =</span> NAP, <span class="at">y =</span> Yfit, <span class="at">yend =</span> Richness),</span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">min</span>(rikz<span class="sc">$</span>NAP) <span class="sc">+</span> <span class="fl">0.2</span>, <span class="at">y =</span> Ybar_rk <span class="sc">+</span> <span class="fl">1.8</span>,</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(Y)), <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2.2</span>, <span class="at">y =</span> <span class="dv">18</span>,</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">as.expression</span>(<span class="fu">bquote</span>(R<span class="sc">^</span><span class="dv">2</span> <span class="sc">==</span> .(R2_rk))),</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NAP"</span>, <span class="at">y =</span> <span class="st">"Richness (n° de espécies)"</span>) <span class="sc">+</span></span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>df_rikz_plot <span class="ot">&lt;-</span> rikz <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Yfit =</span> Yfit_rk,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Ybar =</span> Ybar_rk</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_rikz_plot, <span class="fu">aes</span>(<span class="at">x =</span> NAP, <span class="at">y =</span> Richness)) <span class="sc">+</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> Ybar_rk, <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Desvios da regressão (verde): Ybar -&gt; Yfit</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xend =</span> NAP, <span class="at">y =</span> Ybar, <span class="at">yend =</span> Yfit, <span class="at">color =</span> <span class="st">"reg"</span>),</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Resíduos (vermelho): Yfit -&gt; Y</span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">xend =</span> NAP, <span class="at">y =</span> Yfit, <span class="at">yend =</span> Richness, <span class="at">color =</span> <span class="st">"res"</span>),</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">min</span>(rikz<span class="sc">$</span>NAP) <span class="sc">+</span> <span class="fl">0.2</span>, <span class="at">y =</span> Ybar_rk <span class="sc">+</span> <span class="fl">1.8</span>,</span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(Y)), <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2.2</span>, <span class="at">y =</span> <span class="dv">18</span>,</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">as.expression</span>(<span class="fu">bquote</span>(R<span class="sc">^</span><span class="dv">2</span> <span class="sc">==</span> .(R2_rk))),</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Partição da Soma dos Quadrados"</span>,</span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="at">reg =</span> <span class="st">"forestgreen"</span>, <span class="at">res =</span> <span class="st">"firebrick"</span>),</span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"reg"</span>, <span class="st">"res"</span>),</span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">reg =</span> <span class="fu">expression</span>(<span class="fu">hat</span>(Y)[i] <span class="sc">-</span> <span class="fu">bar</span>(Y) <span class="sc">~</span> <span class="st">"(desvio explicado)"</span>),</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">res =</span> <span class="fu">expression</span>(Y[i] <span class="sc">-</span> <span class="fu">hat</span>(Y)[i] <span class="sc">~</span> <span class="st">"(resíduo)"</span>)</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"NAP"</span>, <span class="at">y =</span> <span class="st">"Richness (n° de espécies)"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-rikz-particao" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
