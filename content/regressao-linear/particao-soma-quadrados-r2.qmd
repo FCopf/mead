@@ -1,6 +1,6 @@
 ---
 title: "Partição da soma dos quadrados e coeficiente de determinação na regressão linear"
-description: "Decomposição algébrica e geométrica da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação R²."
+description: "Decomposição da variabilidade total em componentes da regressão e do resíduo. Derivação e interpretação do coeficiente de determinação $R^2$."
 categories: [
           "Regressão linear",
           "Estatística",
@@ -16,7 +16,7 @@ execute:
   message: false
 ---
 
-:::{.callout-tip collapse="true"}
+::: {.callout-tip collapse="true"}
 ## Pacotes e funções utilizadas no capítulo
 
 ```{r}
@@ -25,10 +25,9 @@ library(patchwork)
 library(gt)
 library(knitr)
 ```
-
 :::
 
-Ao ajustar um modelo de regressão linear simples, obtemos a reta que minimiza a soma dos quadrados dos resíduos ($SQ_{Res}$). No entanto, um aspecto fundamental que ainda não foi explorado em profundidade é: **qual a proporção da variação total em $Y$ que o modelo é capaz de explicar?** Para responder a esta pergunta, precisamos decompor a variação total de $Y$ em duas parcelas distintas: uma atribuída à regressão e outra atribuída aos resíduos. Este processo é conhecido como **partição da soma dos quadrados** e culmina no cálculo do **coeficiente de determinação** $R^2$.
+Ao ajustar um modelo de regressão linear simples, obtemos a reta que minimiza a soma dos quadrados dos resíduos ($SQ_{Res}$). Um aspecto fundamental deste processo consiste em compreender **qual a proporção da variação total em** $Y$ o modelo é capaz de explicar? Para responder a esta pergunta, precisamos decompor a variação total de $Y$ em duas parcelas distintas: uma atribuída à regressão e outra atribuída aos resíduos. Este processo é conhecido como **partição da soma dos quadrados**.
 
 Recordando o modelo de regressão linear simples:
 
@@ -36,7 +35,7 @@ $$Y_i = \hat{\beta}_0 + \hat{\beta}_1 X_i + e_i$$
 
 onde $\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i$ é o valor **ajustado** e $e_i = Y_i - \hat{Y}_i$ é o **resíduo** da $i$-ésima observação.
 
-## As três componentes da variação
+## Os três componentes da variação
 
 Consideremos $n$ pares de observações $(X_i, Y_i)$ com $i = 1, \ldots, n$. Definimos três quantidades fundamentais.
 
@@ -52,16 +51,14 @@ $$SQ_{Reg} = \sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})^2$$
 
 $$SQ_{Res} = \sum_{i=1}^{n}(Y_i - \hat{Y}_i)^2$$
 
-:::{.callout-note}
-
+::: callout-note
 ## As três somas dos quadrados
 
-|Componente               | Expressão                                        | Interpretação                           |
-|:------------------------|:-------------------------------------------------|:----------------------------------------|
-|$SQ_{Total}$             |$\sum (Y_i - \bar{Y})^2$                          | Variação total em $Y$                   |
-|$SQ_{Reg}$               |$\sum (\hat{Y}_i - \bar{Y})^2$                    | Variação explicada pelo modelo          |
-|$SQ_{Res}$               |$\sum (Y_i - \hat{Y}_i)^2$                        | Variação não explicada (resíduo)        |
-
+| Componente | Expressão | Interpretação |
+|:-----------------|:-----------------------------|:------------------------|
+| $SQ_{Total}$ | $\sum (Y_i - \bar{Y})^2$ | Variação total em $Y$ |
+| $SQ_{Reg}$ | $\sum (\hat{Y}_i - \bar{Y})^2$ | Variação explicada pelo modelo |
+| $SQ_{Res}$ | $\sum (Y_i - \hat{Y}_i)^2$ | Variação não explicada (resíduo) |
 :::
 
 A figura abaixo ilustra os três desvios para uma observação qualquer $(X_k, Y_k)$.
@@ -80,7 +77,7 @@ mod_il <- lm(Y ~ X, data = df_il)
 Ybar_il <- mean(Y_il)
 
 # Selecionar um ponto representativo
-k <- 14
+k <- 18
 Xk <- X_il[k]
 Yk <- Y_il[k]
 Yhatk <- fitted(mod_il)[k]
@@ -91,16 +88,16 @@ ggplot(df_il, aes(x = X, y = Y)) +
   geom_hline(yintercept = Ybar_il, linetype = "dashed", color = "gray40", linewidth = 0.8) +
   # Desvio total: Ybar -> Yk
   geom_segment(aes(x = Xk, xend = Xk, y = Ybar_il, yend = Yk),
-               color = "black", linewidth = 1.2,
-               arrow = arrow(ends = "both", length = unit(0.1, "inches"))) +
+               color = "black", linewidth = 0.9,
+               arrow = arrow(ends = "both", length = unit(0.05, "inches"))) +
   # Desvio da regressão: Ybar -> Yhatk
   geom_segment(aes(x = Xk - 0.25, xend = Xk - 0.25, y = Ybar_il, yend = Yhatk),
-               color = "forestgreen", linewidth = 1.2,
-               arrow = arrow(ends = "both", length = unit(0.1, "inches"))) +
+               color = "forestgreen", linewidth = 0.9,
+               arrow = arrow(ends = "both", length = unit(0.05, "inches"))) +
   # Resíduo: Yhatk -> Yk
   geom_segment(aes(x = Xk + 0.25, xend = Xk + 0.25, y = Yhatk, yend = Yk),
-               color = "firebrick", linewidth = 1.2,
-               arrow = arrow(ends = "both", length = unit(0.1, "inches"))) +
+               color = "firebrick", linewidth = 0.9,
+               arrow = arrow(ends = "both", length = unit(0.05, "inches"))) +
   # Ponto destacado
   geom_point(aes(x = Xk, y = Yk), size = 4, shape = 19) +
   annotate("text", x = Xk + 0.55, y = (Ybar_il + Yk) / 2,
@@ -117,85 +114,19 @@ ggplot(df_il, aes(x = X, y = Y)) +
 
 A linha tracejada horizontal representa $\bar{Y}$. Para o ponto destacado, podemos observar:
 
-- O desvio total ($Y_k - \bar{Y}$, em preto) é a soma do desvio da regressão e do resíduo.
-- O desvio da regressão ($\hat{Y}_k - \bar{Y}$, em verde) é a porção do desvio total capturada pelo modelo.
-- O resíduo ($Y_k - \hat{Y}_k$, em vermelho) é o que sobra após o ajuste.
+-   O desvio total ($Y_k - \bar{Y}$, em preto) é a soma do desvio da regressão e do resíduo.
+-   O desvio da regressão ($\hat{Y}_k - \bar{Y}$, em verde) é a porção do desvio total capturada pelo modelo.
+-   O resíduo ($Y_k - \hat{Y}_k$, em vermelho) é o que sobra após o ajuste.
 
-## Derivação algébrica da partição
+Uma propriedade da decomposição da soma dos quadrados é que $SQ_{Total} = SQ_{Reg} + SQ_{Res}$ portanto:
 
-A propriedade aditiva $SQ_{Total} = SQ_{Reg} + SQ_{Res}$ não é óbvia. Vamos demonstrá-la rigorosamente.
-
-### A identidade fundamental
-
-O ponto de partida é a seguinte decomposição do desvio de cada observação em relação à média:
-
-$$Y_i - \bar{Y} = (\hat{Y}_i - \bar{Y}) + (Y_i - \hat{Y}_i)$$
-
-Esta identidade é sempre exata: o desvio total se decompõe na soma do desvio da regressão com o resíduo. Ao elevarmos ambos os lados ao quadrado:
-
-$$(Y_i - \bar{Y})^2 = \left[(\hat{Y}_i - \bar{Y}) + (Y_i - \hat{Y}_i)\right]^2$$
-
-Expandindo o lado direito:
-
-$$(Y_i - \bar{Y})^2 = (\hat{Y}_i - \bar{Y})^2 + (Y_i - \hat{Y}_i)^2 + 2(\hat{Y}_i - \bar{Y})(Y_i - \hat{Y}_i)$$
-
-Somando sobre todas as $n$ observações:
-
-$$\sum_{i=1}^{n}(Y_i - \bar{Y})^2 = \sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})^2 + \sum_{i=1}^{n}(Y_i - \hat{Y}_i)^2 + 2\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})(Y_i - \hat{Y}_i)$$
-
-Ou seja:
-
-$$SQ_{Total} = SQ_{Reg} + SQ_{Res} + 2 \underbrace{\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})\, e_i}_{\text{produto cruzado}}$$
-
-Para que a partição valha, é necessário que o **produto cruzado** seja nulo.
-
-### Anulação do produto cruzado
-
-Denotando o resíduo por $e_i = Y_i - \hat{Y}_i$, precisamos mostrar que:
-
-$$\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})\, e_i = 0$$
-
-Como a reta de regressão passa pelo ponto $(\bar{X}, \bar{Y})$, temos $\bar{Y} = \hat{\beta}_0 + \hat{\beta}_1 \bar{X}$. Portanto:
-
-$$\hat{Y}_i - \bar{Y} = (\hat{\beta}_0 + \hat{\beta}_1 X_i) - (\hat{\beta}_0 + \hat{\beta}_1 \bar{X}) = \hat{\beta}_1(X_i - \bar{X})$$
-
-Substituindo:
-
-$$\sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})\, e_i = \hat{\beta}_1 \sum_{i=1}^{n}(X_i - \bar{X})\, e_i$$
-
-Expandindo $(X_i - \bar{X}) = X_i - \bar{X}$:
-
-$$\sum_{i=1}^{n}(X_i - \bar{X})\, e_i = \sum_{i=1}^{n} X_i\, e_i - \bar{X}\sum_{i=1}^{n} e_i$$
-
-As **condições de mínimos quadrados** (equações normais do MMQ) garantem que:
-
-1. $\displaystyle\sum_{i=1}^{n} e_i = 0$ — a soma dos resíduos é zero.
-2. $\displaystyle\sum_{i=1}^{n} X_i\, e_i = 0$ — os resíduos são não correlacionados com $X$.
-
-Portanto:
-
-$$\sum_{i=1}^{n}(X_i - \bar{X})\, e_i = 0 - \bar{X} \cdot 0 = 0$$
-
-e consequentemente o produto cruzado é nulo. Isto demonstra a identidade:
-
-:::{.callout-note}
-
+::: callout-note
 ## Partição da soma dos quadrados na regressão linear
 
 $$SQ_{Total} = SQ_{Reg} + SQ_{Res}$$
 
 $$\sum_{i=1}^{n}(Y_i - \bar{Y})^2 = \sum_{i=1}^{n}(\hat{Y}_i - \bar{Y})^2 + \sum_{i=1}^{n}(Y_i - \hat{Y}_i)^2$$
-
 :::
-
-### O argumento de ortogonalidade
-
-A nulidade do produto cruzado possui uma interpretação geométrica elegante. Podemos representar as $n$ observações como vetores em $\mathbb{R}^n$. Nesta perspectiva:
-
-- O vetor $\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}$ (desvios dos valores ajustados) pertence ao **espaço coluna** da matriz do modelo $\mathbf{X}$.
-- O vetor $\mathbf{e} = \mathbf{Y} - \hat{\mathbf{Y}}$ (resíduos) é **ortogonal** ao espaço coluna de $\mathbf{X}$, pois as condições de mínimos quadrados garantem exatamente esta propriedade.
-
-A projeção $\hat{\mathbf{Y}}$ é a projeção ortogonal de $\mathbf{Y}$ sobre o espaço coluna de $\mathbf{X}$. A ortogonalidade entre $\hat{\mathbf{Y}} - \bar{Y}\mathbf{1}$ e $\mathbf{e}$ é análoga ao **teorema de Pitágoras**: o quadrado da hipotenusa (desvio total) é igual à soma dos quadrados dos catetos (desvio da regressão e resíduo). Assim, $SQ_{Total} = SQ_{Reg} + SQ_{Res}$ é simplesmente o teorema de Pitágoras no espaço $\mathbb{R}^n$.
 
 ## O coeficiente de determinação $R^2$
 
@@ -203,19 +134,17 @@ A projeção $\hat{\mathbf{Y}}$ é a projeção ortogonal de $\mathbf{Y}$ sobre 
 
 A partição da soma dos quadrados nos permite definir o **coeficiente de determinação** $R^2$ como a proporção da variação total em $Y$ que é explicada pelo modelo de regressão:
 
-:::{.callout-note}
-
+::: callout-note
 ## Coeficiente de determinação
 
 $$R^2 = \frac{SQ_{Reg}}{SQ_{Total}} = 1 - \frac{SQ_{Res}}{SQ_{Total}}$$
-
 :::
 
 Como $0 \le SQ_{Reg} \le SQ_{Total}$, temos $0 \le R^2 \le 1$.
 
-- $R^2 = 0$: o modelo não explica nenhuma variação em $Y$; a reta ajustada é horizontal ($\hat{\beta}_1 = 0$) e $SQ_{Reg} = 0$.
-- $R^2 = 1$: o modelo explica **toda** a variação em $Y$; todos os pontos estão exatamente sobre a reta de regressão e $SQ_{Res} = 0$.
-- $0 < R^2 < 1$: situação usual, em que o modelo explica uma fração $R^2 \times 100\%$ da variação total.
+-   $R^2 = 0$: o modelo não explica nenhuma variação em $Y$; a reta ajustada é horizontal ($\hat{\beta}_1 = 0$) e $SQ_{Reg} = 0$.
+-   $R^2 = 1$: o modelo explica **toda** a variação em $Y$; todos os pontos estão exatamente sobre a reta de regressão e $SQ_{Res} = 0$.
+-   $0 < R^2 < 1$: situação usual, em que o modelo explica uma fração $R^2 \times 100\%$ da variação total.
 
 ### Formulações alternativas
 
@@ -237,38 +166,39 @@ $$R^2 = r^2$$
 
 **Demonstração.** Partindo de $R^2 = SQ_{Reg}/SQ_{Total} = SQ_{XY}^2 / (SQ_X \cdot SQ_Y)$:
 
-$$R^2 = \frac{SQ_{XY}^2}{SQ_X \cdot SQ_Y} = \left(\frac{SQ_{XY}}{\sqrt{SQ_X \cdot SQ_Y}}\right)^2 = r^2 \quad \blacksquare$$
+$$R^2 = \frac{SQ_{XY}^2}{SQ_X \cdot SQ_Y} = \left(\frac{SQ_{XY}}{\sqrt{SQ_X \cdot SQ_Y}}\right)^2 = r^2$$
 
-Esta relação é exclusiva da regressão simples. Na regressão **múltipla**, $R^2$ generaliza o conceito de correlação, mas não é simplesmente o quadrado de uma correlação bivariada.
+> Esta relação é exclusiva da regressão simples. Na regressão **múltipla**, $R^2$ generaliza o conceito de correlação, mas não é simplesmente o quadrado de uma correlação bivariada.
 
 ### Limitações do $R^2$
 
 Embora $R^2$ seja uma medida de ajuste amplamente utilizada, é importante reconhecer suas limitações:
 
-1. **$R^2$ não mede causalidade.** Uma associação forte entre $Y$ e $X$ não implica que $X$ cause $Y$. Uma terceira variável pode ser responsável pela associação observada.
+1.  $R^2$ não mede causalidade. Uma associação forte entre $Y$ e $X$ não implica que $X$ cause $Y$. Uma terceira variável pode ser responsável pela associação observada.
 
-2. **$R^2$ depende da amplitude de $X$.** Ampliar o intervalo dos valores de $X$ tende a aumentar $SQ_{Reg}$ e, consequentemente, $R^2$, mesmo que a dispersão ao redor da reta não mude.
+2.  $R^2$ depende da amplitude de $X$. Ampliar o intervalo dos valores de $X$ tende a aumentar $SQ_{Reg}$ e, consequentemente, $R^2$, mesmo que a dispersão ao redor da reta não mude.
 
-3. **$R^2$ alto não garante bom ajuste.** Um modelo pode ter $R^2$ elevado e ainda apresentar padrões sistemáticos nos resíduos, indicando violação de suposições do modelo.
+3.  $R^2$ alto não garante bom ajuste. Um modelo pode ter $R^2$ elevado e ainda apresentar padrões sistemáticos nos resíduos, indicando violação de suposições do modelo.
 
-4. **$R^2$ baixo não invalida o modelo.** Em muitas aplicações nas ciências biológicas e sociais, $R^2$ moderados (0,3–0,5) já refletem relações substantivas e interpretáveis.
+4.  $R^2$ baixo não invalida o modelo. Em muitas aplicações nas ciências biológicas e sociais, $R^2$ moderados (0,3–0,5) já refletem relações substantivas e interpretáveis.
 
-5. **$R^2$ não é comparável entre conjuntos de dados.** Dois modelos com $R^2$ iguais em datasets diferentes não têm necessariamente a mesma qualidade de ajuste.
+5.  $R^2$ não é comparável entre conjuntos de dados. Dois modelos com $R^2$ iguais em datasets diferentes não têm necessariamente a mesma qualidade de ajuste.
 
 ## Situações extremas
 
 Para compreender melhor o significado de $R^2$, vamos simular dois cenários contrastantes: um com $R^2$ elevado e outro com $R^2$ baixo.
 
 ```{r}
-set.seed(42)
+set.seed(1)
 n_sim <- 60
 X_sim <- seq(1, 10, length.out = n_sim)
+y_det <- 5 + 3 * X_sim
 
 # Cenário 1: R² alto (dispersão pequena em torno da reta)
-Y_alto <- 5 + 3 * X_sim + rnorm(n_sim, sd = 1.5)
+Y_alto <- y_det + rnorm(n_sim, sd = 1.5)
 
 # Cenário 2: R² baixo (dispersão grande em torno da reta)
-Y_baixo <- 5 + 3 * X_sim + rnorm(n_sim, sd = 12)
+Y_baixo <- y_det + rnorm(n_sim, sd = 12)
 ```
 
 ### Cenário com $R^2$ elevado
@@ -287,14 +217,12 @@ SQRes_alto   <- sum((Y_alto - Yfit_alto)^2)
 
 # Verificação: SQTotal = SQReg + SQRes
 cat("SQTotal:", round(SQTotal_alto, 2), "\n")
-cat("SQReg + SQRes:", round(SQReg_alto + SQRes_alto, 2), "\n")
+cat("SQReg:", round(SQReg_alto, 2), "\n")
+cat("SQRes:", round(SQRes_alto, 2), "\n")
 
 # R² manual
 R2_alto_manual <- SQReg_alto / SQTotal_alto
 cat("R² (manual):", round(R2_alto_manual, 4), "\n")
-
-# R² pela função summary
-cat("R² (summary):", round(summary(mod_alto)$r.squared, 4), "\n")
 ```
 
 ### Cenário com $R^2$ baixo
@@ -303,7 +231,7 @@ cat("R² (summary):", round(summary(mod_alto)$r.squared, 4), "\n")
 df_baixo <- data.frame(X = X_sim, Y = Y_baixo)
 mod_baixo <- lm(Y ~ X, data = df_baixo)
 
-# Cálculo manual
+# Cálculo manual das somas dos quadrados
 Ybar_baixo <- mean(Y_baixo)
 Yfit_baixo <- fitted(mod_baixo)
 
@@ -311,12 +239,14 @@ SQTotal_baixo <- sum((Y_baixo - Ybar_baixo)^2)
 SQReg_baixo   <- sum((Yfit_baixo - Ybar_baixo)^2)
 SQRes_baixo   <- sum((Y_baixo - Yfit_baixo)^2)
 
+# Verificação: SQTotal = SQReg + SQRes
 cat("SQTotal:", round(SQTotal_baixo, 2), "\n")
-cat("SQReg + SQRes:", round(SQReg_baixo + SQRes_baixo, 2), "\n")
+cat("SQReg:", round(SQReg_baixo, 2), "\n")
+cat("SQRes:", round(SQRes_baixo, 2), "\n")
 
+# R² manual
 R2_baixo_manual <- SQReg_baixo / SQTotal_baixo
 cat("R² (manual):", round(R2_baixo_manual, 4), "\n")
-cat("R² (summary):", round(summary(mod_baixo)$r.squared, 4), "\n")
 ```
 
 ### Visualização dos dois cenários
@@ -329,6 +259,7 @@ cat("R² (summary):", round(summary(mod_baixo)$r.squared, 4), "\n")
 
 R2_alto  <- round(summary(mod_alto)$r.squared, 3)
 R2_baixo <- round(summary(mod_baixo)$r.squared, 3)
+ylim <- c(0, 70)
 
 p_alto <- ggplot(df_alto, aes(x = X, y = Y)) +
   geom_point(alpha = 0.6, size = 2) +
@@ -345,9 +276,10 @@ p_alto <- ggplot(df_alto, aes(x = X, y = Y)) +
          SQ[Reg] == .(round(SQReg_alto,1)) ~ "; " ~
          SQ[Res] == .(round(SQRes_alto,1))
        ))) +
+  coord_cartesian(ylim = ylim) +
   theme_classic(base_size = 12) +
   theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5, size = 9))
+        plot.subtitle = element_text(hjust = 0.5, size = 12))
 
 p_baixo <- ggplot(df_baixo, aes(x = X, y = Y)) +
   geom_point(alpha = 0.6, size = 2) +
@@ -364,16 +296,16 @@ p_baixo <- ggplot(df_baixo, aes(x = X, y = Y)) +
          SQ[Reg] == .(round(SQReg_baixo,1)) ~ "; " ~
          SQ[Res] == .(round(SQRes_baixo,1))
        ))) +
+  coord_cartesian(ylim = ylim) +
   theme_classic(base_size = 12) +
   theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5, size = 9))
+        plot.subtitle = element_text(hjust = 0.5, size = 12))
 
 p_alto | p_baixo
 ```
 
-Em ambos os cenários a reta de regressão tem a mesma inclinação verdadeira ($\beta_1 = 3$). A diferença está na variância residual: à esquerda, os pontos se concentram em torno da reta ($R^2 = `r R2_alto`$); à direita, a dispersão é muito maior e a regressão explica uma fração pequena da variação total ($R^2 = `r R2_baixo`$).
+Em ambos os cenários, a reta de regressão apresenta a mesma inclinação populacional ($\beta_1 = 3$), o que produz valores de $SQ_{Reg}$ bastante semelhantes. A diferença fundamental reside na variância residual. Na figura à esquerda, os pontos estão fortemente concentrados em torno da reta, o que implica um $SQ_{Res}$ relativamente pequeno em comparação com a variação total ($SQ_{Total}$) e, consequentemente, um $R^2$ elevado ($SQ_{Res} = `r round(SQRes_alto, 2)`$, $R^2 = `r R2_alto`$). Em contraste, na figura à direita, observa-se maior dispersão dos pontos em torno da reta ajustada, resultando em um $SQ_{Res}$ mais elevado e, portanto, em um $R^2$ mais baixo ($SQ_{Res} = `r round(SQRes_baixo, 2)`$, $R^2 = `r R2_baixo`$).
 
-A figura confirma ainda que a identidade $SQ_{Total} = SQ_{Reg} + SQ_{Res}$ é verificada numericamente em ambos os casos, com o mesmo $SQ_{Reg}$ nos dois cenários — o que difere é o $SQ_{Res}$ e, consequentemente, o $SQ_{Total}$.
 
 ## Exemplo aplicado: dados RIKZ
 
@@ -438,10 +370,10 @@ rikz |>
   cols_label(
     Richness  = "Richness",
     NAP       = "NAP",
-    Yfit      = html("&#374;&#770;<sub>i</sub>"),
-    dev_total = html("Y<sub>i</sub> - &#256;"),
-    dev_reg   = html("&#374;&#770;<sub>i</sub> - &#256;"),
-    dev_res   = html("Y<sub>i</sub> - &#374;&#770;<sub>i</sub>")
+    Yfit      = gt::md("$\\hat{Y}_i$"),
+    dev_total = gt::md("$Y_i - \\bar{Y}$"),
+    dev_reg   = gt::md("$\\hat{Y}_i - \\bar{Y}$"),
+    dev_res   = gt::md("$Y_i - \\hat{Y}_i$")
   ) |>
   fmt_number(decimals = 3)
 ```
@@ -461,16 +393,11 @@ SQReg_anova  <- anova_rk$`Sum Sq`[1]
 SQRes_anova  <- anova_rk$`Sum Sq`[2]
 ```
 
-A primeira linha (`NAP`) corresponde a $SQ_{Reg} = `r round(SQReg_anova, 2)`$ e a segunda linha (`Residuals`) a $SQ_{Res} = `r round(SQRes_anova, 2)`$. Confirmamos que estes valores coincidem com os calculados manualmente.
+As somas dos quadrados estão na coluna `Sum sq`. A primeira linha (`NAP`) corresponde a $SQ_{Reg} = `r round(SQReg_anova, 2)`$ e a segunda linha (`Residuals`) a $SQ_{Res} = `r round(SQRes_anova, 2)`$. Confirmamos que estes valores coincidem com os calculados manualmente. O $SQ_{Total}$ não aparece na tabela mais pode ser facilmente obtido pela soma dos outros dois.
 
-O coeficiente de determinação $R^2$ pode ser obtido tanto manualmente quanto pela função `summary`:
+O coeficiente de determinação $R^2$ pode ser obtido pela função `summary`:
 
 ```{r}
-# R² manual
-R2_rk_manual <- SQReg_rk / SQTotal_rk
-cat("R² (manual):", round(R2_rk_manual, 4), "\n")
-
-# R² pela função summary
 R2_rk_func <- summary(mod_rikz)$r.squared
 cat("R² (summary):", round(R2_rk_func, 4), "\n")
 
@@ -490,8 +417,7 @@ Os três valores são idênticos, confirmando a relação $R^2 = r^2$ na regress
 
 O modelo de regressão linear $Richness \sim NAP$ explica `r round(R2_rk * 100, 1)`% da variação total na riqueza de espécies ($R^2 = `r R2_rk`$). Em termos das somas dos quadrados:
 
-$$SQ_{Total} = SQ_{Reg} + SQ_{Res}$$
-$$`r round(SQTotal_rk,1)` = `r round(SQReg_rk,1)` + `r round(SQRes_rk,1)`$$
+$$SQ_{Total} = SQ_{Reg} + SQ_{Res}$$ $$`r round(SQTotal_rk,1)` = `r round(SQReg_rk,1)` + `r round(SQRes_rk,1)`$$
 
 Os `r round((1 - R2_rk)*100, 1)`% restantes da variação não são explicados pelo NAP e estão atribuídos ao resíduo — podem refletir a influência de outras variáveis ambientais, variação natural entre espécies ou erros de medição.
 
@@ -504,29 +430,51 @@ Os `r round((1 - R2_rk)*100, 1)`% restantes da variação não são explicados p
 #| fig-width: 8
 #| fig-height: 5
 #| code-fold: true
-
 df_rikz_plot <- rikz |>
-  mutate(Yfit = Yfit_rk,
-         Ybar = Ybar_rk)
+  mutate(
+    Yfit = Yfit_rk,
+    Ybar = Ybar_rk
+  )
 
 ggplot(df_rikz_plot, aes(x = NAP, y = Richness)) +
   geom_hline(yintercept = Ybar_rk, linetype = "dashed",
              color = "gray40", linewidth = 0.8) +
+
   # Desvios da regressão (verde): Ybar -> Yfit
-  geom_segment(aes(xend = NAP, y = Ybar, yend = Yfit),
-               color = "forestgreen", alpha = 0.5, linewidth = 0.8) +
+  geom_segment(
+    aes(xend = NAP, y = Ybar, yend = Yfit, color = "reg"),
+    alpha = 0.5, linewidth = 0.8
+  ) +
+
   # Resíduos (vermelho): Yfit -> Y
-  geom_segment(aes(xend = NAP, y = Yfit, yend = Richness),
-               color = "firebrick", alpha = 0.5, linewidth = 0.8) +
+  geom_segment(
+    aes(xend = NAP, y = Yfit, yend = Richness, color = "res"),
+    alpha = 0.5, linewidth = 0.8
+  ) +
+
   geom_smooth(method = "lm", se = FALSE, color = "steelblue", linewidth = 1.2) +
   geom_point(size = 2.5, alpha = 0.8) +
+
   annotate("text", x = min(rikz$NAP) + 0.2, y = Ybar_rk + 1.8,
            label = expression(bar(Y)), size = 4.5, color = "gray40") +
   annotate("text", x = 2.2, y = 18,
            label = as.expression(bquote(R^2 == .(R2_rk))),
            size = 5, color = "steelblue") +
-  labs(x = "NAP", y = "Richness (n° de espécies)") +
-  theme_classic(base_size = 13)
+
+  scale_color_manual(
+    name = "Partição da Soma dos Quadrados",
+    values = c(reg = "forestgreen", res = "firebrick"),
+    breaks = c("reg", "res"),
+    labels = c(
+      reg = expression(hat(Y)[i] - bar(Y) ~ "(desvio explicado)"),
+      res = expression(Y[i] - hat(Y)[i] ~ "(resíduo)")
+    )
+  ) +
+
+  labs(x = "NAP", y = "Richness (n° de espécies)", color = NULL) +
+  theme_classic(base_size = 13) +
+  theme(legend.position = "bottom")
+
 ```
 
 Na @fig-rikz-particao, os segmentos verdes representam os desvios de $\hat{Y}_i$ em relação a $\bar{Y}$ ($SQ_{Reg}$) e os segmentos vermelhos representam os resíduos $e_i = Y_i - \hat{Y}_i$ ($SQ_{Res}$). A soma dos quadrados de todos os segmentos verdes mais a soma dos quadrados de todos os segmentos vermelhos é igual à soma dos quadrados de todos os desvios totais ($SQ_{Total}$).
